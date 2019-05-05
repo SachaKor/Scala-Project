@@ -45,4 +45,11 @@ Otherwise, his score is equal to the accumulated score + 10.
 *NOTE*: During the last round, all the players except the one who declared it cannot drop the last card of the card set, even if the card is of the same rank as on top of the opened deck.
 
 The points of every match are accumulated until one of the players reaches the 100 points threshold.
-The __winner__ of the game is the player having the minimum score.
+The __winner__ of the game is the player having the minimum score.  
+
+### Implementation   
+Our main goal is to implement a multi-player game. If the time lets us, we would also like to implement an AI player.  
+
+__Technologies__  
+* Backend: REST API  
+* Frontend: Vue.js  
