@@ -49,7 +49,9 @@ The __winner__ of the game is the player having the minimum score.
 
 ### Implementation   
 Our main goal is to implement a multi-player game. If the time lets us, we would also like to implement an AI player.  
+We will use the database to store the players data: score statistics, the users' profiles, etc.
 
 __Technologies__  
 * Backend: REST API  
 * Frontend: Vue.js  
+* Database: Slick
