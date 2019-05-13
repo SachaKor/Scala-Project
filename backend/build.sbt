@@ -1,8 +1,8 @@
-name := "Backend"
+name := "SCALA_Play_Framework_Example"
  
 version := "1.0" 
       
-lazy val `backend` = (project in file(".")).enablePlugins(PlayScala)
+lazy val `scala_play_framework_example` = (project in file(".")).enablePlugins(PlayScala)
 
 resolvers += "scalaz-bintray" at "https://dl.bintray.com/scalaz/releases"
       
