@@ -1,5 +1,8 @@
 package models
 
+/**
+  * This Enumeration contains all ranks of the cards
+  */
 object Rank extends Enumeration {
   type Rank = Value
   val two   = Value("2")
