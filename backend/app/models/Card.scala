@@ -21,5 +21,7 @@ class Card(r: Rank, s: Suit, p: Int) {
     * @param other the Card to compare to
     * @return true if two Cards are equal
     */
-  def ==(other: Card): Boolean = (rank == other.rank) && (suit == other.suit)
+  def equals(other: Card): Boolean = {
+    (rank == other.rank) && (suit == other.suit)
+  }
 }

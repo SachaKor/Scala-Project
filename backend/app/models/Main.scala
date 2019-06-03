@@ -2,9 +2,36 @@ package models
 
 object Main extends App {
 
-  testCard()
-  testDeck()
-  testPlayer()
+//  testCard()
+//  testDeck()
+//  testPlayer()
+  testGame()
+
+  def testGame() = {
+    println("...simulating a game...")
+    // Create 4 players
+    val players: List[Player] = List(
+      new Player("Arnold", List()),
+      new Player("PS", List()),
+      new Player("Sam", List()),
+      new Player("Sasha", List())
+    )
+    Game.addPlayers(players)
+    println("Players do not have cards yet")
+    Game.players.foreach(p => println(p.toString))
+    Game.newMatch()
+    println("First match started, cards distributed")
+    Game.players.foreach(p => println(p.toString))
+    val curPlayer =  Game.curPlayer()
+    println("Current player: " + curPlayer)
+    // current player picks a card from the closed deck
+    val picked = Game.pickCardFromClosedDeck()
+    println(curPlayer.name + " picked " + picked)
+    val replaced = Game.replaceCard(0)
+    println(curPlayer.name + " replaced " + replaced + " card")
+    println(curPlayer.toString)
+
+  }
 
   def testPlayer() = {
     println("\n...testing models.Player class...")
@@ -22,6 +49,13 @@ object Main extends App {
     println("After picking 4 cards from the deck")
     player.putCards(Deck52.deck.pickCards(4))
     println(player.cards.map(_.toString))
+    val replaced = player.replaceCard(Deck52.deck.pickCard(), 1)
+    println("After replacing the 1st card")
+    println(player.cards.map(_.toString))
+    println("The replaced card: " + replaced.toString)
+    // now check if the error is thrown
+//    player.replaceCard(Deck52.deck.pickCard(), 15)
+    // it is
   }
 
   def testDeck() = {
@@ -57,6 +91,6 @@ object Main extends App {
     cards.foreach(println)
 
     val spadesRedQueen = new Card(Rank.queen, Suit.spades, 12)
-    require(cards.head == spadesRedQueen)
+    require(cards.head.equals(spadesRedQueen))
   }
 }
