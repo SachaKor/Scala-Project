@@ -5,6 +5,7 @@
 
 # An example controller showing a sample home page
 GET     /                           controllers.HomeController.index
+GET     /secure                     controllers.HomeController.secure
 # GET     /javascriptRoutes           controllers.HomeController.javascriptRoutes
 
       
