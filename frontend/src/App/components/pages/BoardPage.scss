@@ -1,0 +1,59 @@
+@import '../../variables.scss';
+
+.card-decks-container {
+  height: $content-height;
+  padding: 1em 0;
+  min-height: 900px;
+  min-width: 1600px;
+  padding: 2em 0;
+
+  .turn {
+    position: absolute;
+    top: 90px;
+    left: 20px;
+    background-color: white;
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-size: 20px;
+    font-width: 600;
+  }
+
+  .container-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    // background-color: red;
+
+    &.top-row {
+      height: 25%;
+      margin-bottom: 1em;
+    }
+
+    &.middle-row {
+      height: 30%;
+    }
+
+    &.bottom-row {
+      height: 35%;
+      margin-top: 1em;
+    }
+
+    .top-deck {
+
+    }
+
+    .left-deck {
+
+    }
+
+    .right-deck {
+
+    }
+
+    .bottom-deck {
+
+    }
+  }
+}

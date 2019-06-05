@@ -1,0 +1,37 @@
+@import '../../variables.scss';
+
+.deck {
+  height: 100%;
+  background-color: $dark;
+  border-radius: 8px;
+
+  &.left-deck {
+    transform: rotate(90deg);
+    margin-right: 200px;
+  }
+
+  &.right-deck {
+    transform: rotate(-90deg);
+    margin-left: 200px;
+  }
+
+  .cards {
+    height: 100%;
+
+    .cards-row {
+      display: flex;
+      align-items: center;
+      height: 50%;
+
+      img {
+        &:hover {
+          border: solid 5px red;
+        }
+
+        height: calc(100% - 10px);
+        border: solid 5px transparent;
+        border-radius: 8px;
+      }
+    }
+  }
+}
