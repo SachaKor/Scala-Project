@@ -1,25 +1,22 @@
 package controllers
 
-import javax.inject.Inject
-import models.DataSource
-import play.api.libs.json.Json
+import models.User
+import models.Login
+import dao.UserDAO
 import play.api.mvc._
 import play.api.mvc.Results._
+import play.api.libs.json._
+import javax.inject.Inject
+
+import scala.concurrent.duration._
+import scala.concurrent.{Await, ExecutionContext, Future}
 import utilities.JwtUtility
+import play.api.Logger
 
-import scala.concurrent.{ExecutionContext, Future}
+case class UserRequest[A](user: User, request: Request[A]) extends WrappedRequest[A](request)
 
-case class UserInfo(id: Int,
-                    firstName: String,
-                    lastName: String,
-                    email: String)
-
-case class User(email: String, userId: String)
-
-case class UserRequest[A](userInfo: UserInfo, request: Request[A]) extends WrappedRequest[A](request)
-
-class SecuredAction @Inject()(val parser: BodyParsers.Default, dataSource: DataSource)(implicit val executionContext: ExecutionContext) extends ActionBuilder[UserRequest, AnyContent] with ActionRefiner[Request, UserRequest] {
-  implicit val formatUserDetails = Json.format[User]
+class SecuredAction @Inject()(val parser: BodyParsers.Default, userDAO: UserDAO)(implicit val executionContext: ExecutionContext) extends ActionBuilder[UserRequest, AnyContent] with ActionRefiner[Request, UserRequest] {
+  implicit val formatUserDetails = Json.format[Login]
 
   override def refine[A](request: Request[A]): Future[Either[Result, UserRequest[A]]] = Future.successful {
     val jwtToken = request.headers.get("Authorization").getOrElse("")
@@ -27,11 +24,18 @@ class SecuredAction @Inject()(val parser: BodyParsers.Default, dataSource: DataS
     if (JwtUtility.isValidToken(jwtToken)) {
       JwtUtility.decodePayload(jwtToken) match {
         case Some(payload) => {
-          val userCredentials = Json.parse(payload).validate[User].get
+          Logger.debug(payload)
 
-          // Replace this block with data source
-          val maybeUserInfo = dataSource.getUser(userCredentials.email, userCredentials.userId)
-          maybeUserInfo.map(userInfo => UserRequest(userInfo, request)).toRight(Unauthorized("Invalid credentials"))
+          val credentials = Json.parse(payload).validate[Login].get
+          val findUser = userDAO.findByUsernameAndPassword(credentials.username, credentials.password)
+          val u = Await.result(findUser, 1 second)
+
+          u match {
+            case Some(u) =>
+              Right(UserRequest(u, request))
+            case None =>
+              Left(Unauthorized("Invalid credentials"))
+          }
         }
         case None => Left(Unauthorized("Invalid credential"))
       }

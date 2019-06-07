@@ -1,7 +1,7 @@
 export const PATHS = {
   HOME: '/',
   LOGIN: '/login',
-  SIGNIN: '/signin',
+  SIGNUP: '/signup',
   BOARD: '/board',
   LOBBY: '/lobby'
 }
@@ -12,4 +12,4 @@ export const PATHS_NAV = [
   PATHS.LOBBY
 ]
 
-export const PATHS_NO_NAV = [PATHS.LOGIN, PATHS.SIGNIN]
+export const PATHS_NO_NAV = [PATHS.LOGIN, PATHS.SIGNUP]

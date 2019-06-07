@@ -17,10 +17,10 @@ class LoginForm extends Component {
   }
 
   handleSubmit = (values, { setSubmitting }) => {
-    const { email, password } = values
+    const { username, password } = values
     const { dispatch } = this.props
 
-    dispatch(userActions.login(email, password))
+    dispatch(userActions.login(username, password))
     setSubmitting(false)
   }
 
@@ -29,47 +29,38 @@ class LoginForm extends Component {
       <div className="identification-form-root">
         <div className="identification-form-container px-3 py-4">
           <Formik
-            initialValues={{ email: '', password: '' }}
+            initialValues={{ username: '', password: '' }}
             validate={(values) => {
               const errors = {}
-              if (!values.email) {
-                errors.email = 'Champ obligatoire'
-              } else if (
-                !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)
-              ) {
-                errors.email = 'Adresse email invalide'
+              if (!values.username) {
+                errors.username = 'Required'
               }
               if (!values.password) {
-                errors.password = 'Champ obligatoire'
+                errors.password = 'Required'
               }
 
               return errors
             }}
-            onSubmit={(values, { setSubmitting }) => {
-              setTimeout(() => {
-                alert(JSON.stringify(values, null, 2))
-                setSubmitting(false)
-              }, 400)
-            }}
+            onSubmit={this.handleSubmit}
           >
             {({ isSubmitting, errors, touched }) => (
               <Form>
-                <h1 className="mb-3 mt-0">Connexion</h1>
+                <h1 className="mb-3 mt-0">Login</h1>
                 <div className="mb-2">
-                  <div className="input-title mb-1">Email</div>
+                  <div className="input-title mb-1">Username</div>
                   <Field
-                    type="email"
-                    name="email"
-                    className={errors.email && touched.email ? 'input-error' : ''}
+                    type="username"
+                    name="username"
+                    className={errors.username && touched.username ? 'input-error' : ''}
                   />
                   <ErrorMessage
-                    name="email"
+                    name="username"
                     component="div"
                     className="txt-error"
                   />
                 </div>
                 <div className="mb-3">
-                  <div className="input-title mb-1">Mot de passe</div>
+                  <div className="input-title mb-1">Password</div>
                   <Field
                     type="password"
                     name="password"
@@ -89,12 +80,12 @@ class LoginForm extends Component {
                     disabled={isSubmitting}
                     className="generic-btn"
                   >
-                    Se connecter
+                    Login
                   </button>
                 </div>
                 <div className="txt-info">
-                  Pas encore de compte ?&nbsp;
-                  <Link to={PATHS.SIGNIN}>S&apos;inscrire</Link>
+                  No account yet ?&nbsp;
+                  <Link to={PATHS.SIGNUP}>Signup</Link>
                 </div>
               </Form>
             )}

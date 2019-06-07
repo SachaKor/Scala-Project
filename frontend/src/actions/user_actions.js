@@ -10,19 +10,19 @@ export default {
   delete: _delete,
 }
 
-function login(email, password) {
+function login(username, password) {
   return (dispatch) => {
-    dispatch(request({ email }))
+    dispatch(request({ username }))
 
-    userServices.login(email, password).then(
+    userServices.login(username, password).then(
       (user) => {
         dispatch(success(user))
         history.push('/')
         dispatch(alertActions.success('Login successful'))
       },
       (error) => {
-        dispatch(failure(error.response.data))
-        dispatch(alertActions.error(error.response.data))
+        dispatch(failure(error.message))
+        dispatch(alertActions.error(error.message))
       }
     )
   }
@@ -54,8 +54,8 @@ function register(user) {
         dispatch(alertActions.success('Registration successful'))
       },
       (error) => {
-        dispatch(failure(error.response.data))
-        dispatch(alertActions.error(error.response.data))
+        dispatch(failure(error.message))
+        dispatch(alertActions.error(error.message))
       }
     )
   }

@@ -5,7 +5,11 @@
 
 # An example controller showing a sample home page
 GET     /                           controllers.HomeController.index
+POST    /users/login                controllers.HomeController.login
+POST    /users/signup               controllers.HomeController.signup
+
 GET     /secure                     controllers.HomeController.secure
+
 # GET     /javascriptRoutes           controllers.HomeController.javascriptRoutes
 
       

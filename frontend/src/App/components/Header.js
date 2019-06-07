@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
+import api from '../../helpers/api'
 
 import { ReactComponent as UserIcon } from '../assets/svg/user.svg'
 
@@ -16,6 +17,18 @@ class Header extends Component {
     this.state = INITIAL_STATE
   }
 
+  handleClick = () => {
+    console.log('click')
+    api.get('/secure').then(
+      (response) => {
+        console.log(response)
+      },
+      (error) => {
+        console.log(error)
+      }
+    )
+  }
+
   render() {
     return (
       <div className="header-root">
@@ -26,6 +39,9 @@ class Header extends Component {
             </Link>
           </div>
           <div className="header-button">
+            <button onClick={this.handleClick}>
+              TEST
+            </button>
             <Link to={PATHS.LOGIN}>
               LOGIN
             </Link>

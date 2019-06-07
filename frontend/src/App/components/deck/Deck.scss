@@ -5,6 +5,10 @@
   background-color: $dark;
   border-radius: 8px;
 
+  &.common {
+    height: 50%;
+  }
+
   &.left-deck {
     transform: rotate(90deg);
     margin-right: 200px;
@@ -22,6 +26,10 @@
       display: flex;
       align-items: center;
       height: 50%;
+
+      &.common {
+        height: 100%;
+      }
 
       img {
         &:hover {

@@ -9,12 +9,13 @@ export default {
   delete: _delete,
 }
 
-function login(email, password) {
+function login(username, password) {
+  console.log( { username, password })
   return api
-    .post('/users/login', { email, password })
+    .post('/users/login', { username, password })
     .then((response) => {
       // store user details and jwt token in local storage to keep user logged in between page refreshes
-      localStorage.setItem('user', JSON.stringify(response.data))
+      localStorage.setItem('user', JSON.stringify(response.data.user))
       return response
     })
     .catch(handleError)
@@ -30,7 +31,7 @@ function getById(id) {
 }
 
 function register(user) {
-  return api.post('/users/signin', user).catch(handleError)
+  return api.post('/users/signup', user).catch(handleError)
 }
 
 function update(user) {

@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import SocketContext from '../../utils/SocketContext'
 
 import Deck from '../deck/Deck'
+import CommonDeck from '../deck/CommonDeck'
 import card from '../../assets/cards/ace_of_spades.png'
 
 import './BoardPage.scss'
@@ -27,7 +28,7 @@ class BoardPage extends Component {
         </div>
         <div className="container-row middle-row">
           <Deck rotate={1} />
-          <Deck />
+          <CommonDeck />
           <Deck rotate={-1} />
         </div>
         <div className="container-row bottom-row">

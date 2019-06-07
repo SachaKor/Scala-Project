@@ -6,20 +6,20 @@ class JwtUtility {
   val JwtSecretKey = "Yolocto"
   val JwtSecretAlgo = "HS256"
 
-  def createToken(payload:String):String ={
+  def createToken(payload:String): String ={
     val header = JwtHeader(JwtSecretAlgo)
     val claimsSet = JwtClaimsSet(payload)
 
     JsonWebToken(header, claimsSet, JwtSecretKey)
   }
 
-  def isValidToken(jwtToken:String):Boolean =
+  def isValidToken(jwtToken:String): Boolean =
     JsonWebToken.validate(jwtToken,JwtSecretKey)
 
-  def decodePayload(jwtToken:String):Option[String]=
+  def decodePayload(jwtToken:String): Option[String] =
     jwtToken match{
-      case JsonWebToken(header, claimsSet, signature) =>Option(claimsSet.asJsonString)
-      case _ =>None
+      case JsonWebToken(header, claimsSet, signature) => Option(claimsSet.asJsonString)
+      case _ => None
     }
 }
 
