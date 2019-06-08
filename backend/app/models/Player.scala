@@ -1,5 +1,7 @@
 package models
 
+import play.api.libs.json.{JsString, JsValue, Json}
+
 class Player(n: String, c: List[Card]) {
   var cards: List[Card] = c
   val name: String = n
@@ -51,6 +53,19 @@ class Player(n: String, c: List[Card]) {
     * The Player drops all of his cards
     */
   def dropCards() = cards = List()
+
+  def toJson(indices: List[Int]): JsValue = {
+    if(indices.length > this.cards.length)
+      throw new Error("Too many cards to show")
+    val cardsToShow: List[Card] = indices.map(i => seeCard(i))
+    val cards: List[Card] = this.cards.map(c =>
+      if (cardsToShow.contains(c)) c
+      else new Card(Rank.closed, Suit.closed, -1))
+    Json.obj(
+      "name"-> this.name,
+      "cards" -> new CardList(cards).toJson()
+    )
+  }
 
   override def toString: String = name + ": " + cards.map(c => c.toString + " ")
 }

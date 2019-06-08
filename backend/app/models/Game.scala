@@ -19,6 +19,8 @@ object Game {
   var gameScores: Map[Player, Int] = players.map(p => (p, 0)).toMap
   // the player who starts the match
   private var firstPlayer: Player = _
+  // false before the first match is initialized, true after
+  private var started = false
 
   /**
     * Finds the next player to play the turn
@@ -102,11 +104,14 @@ object Game {
     matches.head.curRound.curTurn.exchangeCards(target, hCardIndex, tCardIndex)
 
   /* **************** Methods returning the game state ************************ */
+
   def getState(p: Player): JsValue = {
-    Logger.info(Json.arr(Json.toJson(p.cards.map(c => c.toJson))).toString())
+    // indices of the player's cards to show
+    val cardIndicesToShow: List[Int] = if (!started) List(0,1) else List()
+    val cardList = new CardList(p.cards)
     Json.obj(
-      "name" -> p.name
-//      "cards" -> Json.arr(p.cards.map(c => c.toJson).toArray)
+      "me" -> p.toJson(cardIndicesToShow),
+      "others" -> Json.toJson(players.filter(pl => pl != p).map(pl => pl.toJson(List())))
     )
   }
 
