@@ -5,7 +5,21 @@ object Main extends App {
 //  testCard()
 //  testDeck()
 //  testPlayer()
-  testGame()
+//  testGame()
+  testGameState()
+
+  def testGameState() = {
+    val players: List[Player] = List(
+      new Player("Arnold", List()),
+      new Player("PS", List()),
+      new Player("Sam", List()),
+      new Player("Sasha", List())
+    )
+    Game.addPlayers(players)
+    Game.newMatch()
+    val s = Game.getState(players.apply(3))
+    println(s.toString())
+  }
 
   def testGame() = {
     println("...simulating a game...")
