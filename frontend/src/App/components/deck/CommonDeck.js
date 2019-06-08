@@ -16,8 +16,7 @@ class CommonDeck extends Component {
   }
 
   handleClick = () => {
-    console.log(this.props.socket)
-    // this.props.socket.send("Hello")
+    this.props.socket.send("Hello")
   }
 
   render() {
@@ -41,7 +40,7 @@ class CommonDeck extends Component {
 
 const DeckWithSocket = props => (
   <SocketContext.Consumer>
-    {socket => <div>{socket}</div>}
+    {socket => <CommonDeck {...props} socket={socket} />}
   </SocketContext.Consumer>
 )
 

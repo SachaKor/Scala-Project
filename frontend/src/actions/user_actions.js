@@ -17,7 +17,7 @@ function login(username, password) {
     userServices.login(username, password).then(
       (user) => {
         dispatch(success(user))
-        history.push('/')
+        history.push('/board')
         dispatch(alertActions.success('Login successful'))
       },
       (error) => {

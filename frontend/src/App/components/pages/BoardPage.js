@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import SocketContext from '../../utils/SocketContext'
 
 import Deck from '../deck/Deck'
 import CommonDeck from '../deck/CommonDeck'

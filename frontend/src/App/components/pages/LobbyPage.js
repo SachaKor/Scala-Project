@@ -13,9 +13,7 @@ class LobbyPage extends Component {
 
   render() {
     return (
-      <SocketContext.Consumer>
-        <h1>Hello</h1>
-      </SocketContext.Consumer>
+      <h1>Hello</h1>
     )
   }
 }
