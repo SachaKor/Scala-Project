@@ -1,38 +1,60 @@
-import React, { Fragment } from 'react'
+import React, { Fragment, Component } from 'react'
 import { Switch, Route, withRouter } from 'react-router-dom'
 import SocketContext from './utils/SocketContext'
 import PrivateRoute from '../components'
-import * as io from 'socket.io-client'
-
 import Header from './components/Header.js'
 import LoginPage from './components/pages/LoginPage.js'
 import SignupPage from './components/pages/SignupPage.js'
 import LobbyPage from './components/pages/LobbyPage.js'
 import BoardPage from './components/pages/BoardPage.js'
-
 import { PATHS } from './routes'
 import './App.scss'
 
-// const socket = io('http://localhost:9000')
-const socket = null
+const URL = 'ws://localhost:9000/ws'
 
-function App() {
-  return (
-    <Fragment>
-      <Header />
-      <div className="main-container">
-        <Switch>
-          <Route path={PATHS.HOME} exact component={BoardPage} />
-          <Route path={PATHS.LOGIN} exact component={LoginPage} />
-          <Route path={PATHS.SIGNUP} exact component={SignupPage} />
-          <SocketContext.Provider value={socket}>
-            <PrivateRoute path={PATHS.LOBBY} component={LobbyPage} />
-            <PrivateRoute path={PATHS.BOARD} component={BoardPage} />
-          </SocketContext.Provider>
-        </Switch>
-      </div>
-    </Fragment>
-  )
+class App extends Component {
+
+  socket = new WebSocket(URL)
+
+  componentDidMount() {
+    this.socket.onopen = () => {
+      // on connecting, do nothing but log it to the console
+      console.log('connected')
+    }
+
+    this.socket.onmessage = evt => {
+      // on receiving a message, add it to the list of messages
+      const message = JSON.parse(evt.data)
+      this.addMessage(message)
+    }
+
+    this.socket.onclose = () => {
+      console.log('disconnected')
+      // automatically try to reconnect on connection loss
+      this.setState({
+        ws: new WebSocket(URL),
+      })
+    }
+  }
+
+  render() {
+    return (
+      <Fragment>
+        <Header />
+        <div className="main-container">
+          <Switch>
+            <Route path={PATHS.HOME} exact component={BoardPage} />
+            <Route path={PATHS.LOGIN} exact component={LoginPage} />
+            <Route path={PATHS.SIGNUP} exact component={SignupPage} />
+            <SocketContext.Provider value={this.socket}>
+              <PrivateRoute path={PATHS.LOBBY} component={LobbyPage} />
+              <PrivateRoute path={PATHS.BOARD} component={BoardPage} />
+            </SocketContext.Provider>
+          </Switch>
+        </div>
+      </Fragment>
+    )
+  }
 }
 
 export default withRouter(App)

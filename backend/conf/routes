@@ -7,8 +7,9 @@
 GET     /                           controllers.HomeController.index
 POST    /users/login                controllers.HomeController.login
 POST    /users/signup               controllers.HomeController.signup
-
 GET     /secure                     controllers.HomeController.secure
+
+GET     /ws                         controllers.GameController.socket
 
 # GET     /javascriptRoutes           controllers.HomeController.javascriptRoutes
 
