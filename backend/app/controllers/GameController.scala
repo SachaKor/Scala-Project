@@ -12,6 +12,7 @@ import play.api.libs.json._
 import utilities.JwtUtility
 import models.Login
 import dao.UserDAO
+import play.api.mvc.Results.Unauthorized
 
 import scala.concurrent.{Await, Future}
 import scala.concurrent.duration._
@@ -26,10 +27,33 @@ import scala.concurrent.duration._
 @Singleton
 class GameController @Inject()(cc: ControllerComponents, userDAO: UserDAO)(implicit system: ActorSystem, mat: Materializer) extends AbstractController(cc) {
 
-  def socket = WebSocket.accept[String, String] { request =>
-    Logger.info("In socket")
-    ActorFlow.actorRef { out =>
-      GameServiceActor.props(out)
-    }
+  def socket = WebSocket.acceptOrResult[String, String] { request =>
+    Future.successful(request.headers.get("Authorization") match {
+      case None => Left(Forbidden)
+      case Some(jwtToken) =>
+        if (JwtUtility.isValidToken(jwtToken)) {
+          JwtUtility.decodePayload(jwtToken) match {
+            case Some(payload) => {
+              Logger.debug(payload)
+
+              val credentials = Json.parse(payload).validate[Login].get
+              val findUser = userDAO.findByUsernameAndPassword(credentials.username, credentials.password)
+              val u = Await.result(findUser, 1 second)
+
+              u match {
+                case Some(user) =>
+                  Right(
+                    ActorFlow.actorRef { out =>
+                      GameServiceActor.props(out, user)
+                    })
+                case None =>
+                  Left(Unauthorized("Invalid credentials"))
+              }
+            }
+          }
+        } else {
+          Left(Forbidden)
+        }
+    })
   }
 }

@@ -1,24 +1,23 @@
 package services
 
 import akka.actor.{Actor, ActorRef, PoisonPill, Props}
-import models.Game
+import models.{Game, Player, User}
+import play.api.libs.json.Json
 
 object GameServiceActor {
-  def props(out: ActorRef) = Props(new GameServiceActor(out))
+  def props(out: ActorRef, user: User) = Props(new GameServiceActor(out, user))
 }
 
-class GameServiceActor(out: ActorRef) extends Actor {
+class GameServiceActor(out: ActorRef, user: User) extends Actor {
   override def receive: Receive = {
-    case msg: String if msg.contains("close") =>
-      out ! s"Closing the connection as requested"
-      self ! PoisonPill
     case msg: String =>
       msg match {
-        case "JOIN" => {
-
-          out ! s"Echo, Received the message: ${msg}"
-        }
-        case "JOIN" => out ! s"Echo, Received the message: ${msg}"
+        case "JOIN" =>
+          Game.addPlayer(new Player(user.username, List()))
+          out ! Json.obj(
+            "status" -> "OK",
+            "message" -> s"Player ${user.username} has been added to the game"
+          )
       }
   }
 
