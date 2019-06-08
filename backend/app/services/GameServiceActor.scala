@@ -2,7 +2,8 @@ package services
 
 import akka.actor.{Actor, ActorRef, PoisonPill, Props}
 import models.{Game, Player, User}
-import play.api.libs.json.Json
+import play.api.Logger
+import play.api.libs.json._
 
 object GameServiceActor {
   def props(out: ActorRef, user: User) = Props(new GameServiceActor(out, user))
@@ -10,14 +11,23 @@ object GameServiceActor {
 
 class GameServiceActor(out: ActorRef, user: User) extends Actor {
   override def receive: Receive = {
-    case msg: String =>
-      msg match {
-        case "JOIN" =>
-          Game.addPlayer(new Player(user.username, List()))
+    case msg: JsValue =>
+      (msg \ "type").validate[String] match {
+        case JsSuccess(value, _) =>
+          value match {
+            case "join" =>
+              Game.addPlayer(new Player(user.username, List()))
+              out ! Json.obj(
+                "status" -> "OK",
+                "message" -> s"Player ${user.username} has been added to the game"
+              )
+          }
+        case e: JsError =>
+          Logger.error("Unable to deserialize JSON message")
           out ! Json.obj(
-            "status" -> "OK",
-            "message" -> s"Player ${user.username} has been added to the game"
+            "status" -> "ERROR"
           )
+          self ! PoisonPill
       }
   }
 

@@ -13,6 +13,7 @@ import utilities.JwtUtility
 import models.Login
 import dao.UserDAO
 import play.api.mvc.Results.Unauthorized
+import play.api.mvc.WebSocket.MessageFlowTransformer
 
 import scala.concurrent.{Await, Future}
 import scala.concurrent.duration._
@@ -26,8 +27,8 @@ import scala.concurrent.duration._
   */
 @Singleton
 class GameController @Inject()(cc: ControllerComponents, userDAO: UserDAO)(implicit system: ActorSystem, mat: Materializer) extends AbstractController(cc) {
-
-  def socket = WebSocket.acceptOrResult[String, String] { request =>
+  def socket = WebSocket.acceptOrResult[JsValue, JsValue] { request =>
+    implicit val formatUserDetails = Json.format[Login]
     Future.successful(request.headers.get("Authorization") match {
       case None => Left(Forbidden)
       case Some(jwtToken) =>
