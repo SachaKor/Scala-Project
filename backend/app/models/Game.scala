@@ -2,6 +2,10 @@ package models
 
 import java.util.Random
 
+import play.api.libs.json.{JsArray, JsObject, JsString, JsValue, Json}
+
+import play.api.Logger
+
 /**
   * - Initiate the game
   * - Add players to the game
@@ -85,7 +89,7 @@ object Game {
     matches = new Match(firstPlayer) :: matches
   }
 
-  /* **************** Methods propagated to Turn inner class ************************ */
+  /* **************** Methods propagated to the Turn inner class ************************ */
   def curPlayer(): Player = matches.head.curRound.curTurn.player
   def pickCardFromOpenedDeck(): Card = matches.head.curRound.curTurn.pickCardFromOpenedDeck()
   def pickCardFromClosedDeck(): Card = matches.head.curRound.curTurn.pickCardFromClosedDeck()
@@ -96,6 +100,15 @@ object Game {
     matches.head.curRound.curTurn.viewPlayersCard(target, index)
   def exchangeCards(target: Player, hCardIndex: Int, tCardIndex: Int): Card =
     matches.head.curRound.curTurn.exchangeCards(target, hCardIndex, tCardIndex)
+
+  /* **************** Methods returning the game state ************************ */
+  def getState(p: Player): JsValue = {
+    Logger.info(Json.arr(Json.toJson(p.cards.map(c => c.toJson))).toString())
+    Json.obj(
+      "name" -> p.name
+//      "cards" -> Json.arr(p.cards.map(c => c.toJson).toArray)
+    )
+  }
 
   class Match(first: Player) {
 

@@ -2,6 +2,7 @@ package models
 
 import models.Rank.Rank
 import models.Suit.Suit
+import play.api.libs.json.{JsObject, JsString, JsValue, Json}
 
 /**
   * This class represents a card
@@ -15,6 +16,11 @@ class Card(r: Rank, s: Suit, p: Int) {
   val points = p
 
   override def toString: String = "[" + rank.toString + s.toString + "]"
+
+  def toJson: JsValue = Json.obj(
+    "rank" -> JsString(rank.toString),
+    "suit" -> JsString(suit.toString)
+  )
 
   /**
     * Verifies if 2 Cards are equal
