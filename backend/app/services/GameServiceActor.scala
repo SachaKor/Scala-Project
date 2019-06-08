@@ -1,6 +1,7 @@
 package services
 
 import akka.actor.{Actor, ActorRef, PoisonPill, Props}
+import models.Game
 
 object GameServiceActor {
   def props(out: ActorRef) = Props(new GameServiceActor(out))
@@ -12,7 +13,13 @@ class GameServiceActor(out: ActorRef) extends Actor {
       out ! s"Closing the connection as requested"
       self ! PoisonPill
     case msg: String =>
-      out ! s"Echo, Received the message: ${msg}"
+      msg match {
+        case "JOIN" => {
+
+          out ! s"Echo, Received the message: ${msg}"
+        }
+        case "JOIN" => out ! s"Echo, Received the message: ${msg}"
+      }
   }
 
   override def postStop() {

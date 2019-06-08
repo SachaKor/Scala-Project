@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import SocketContext from '../../utils/SocketContext'
 
 import card from '../../assets/cards/ace_of_spades.png'
 
@@ -14,6 +15,11 @@ class CommonDeck extends Component {
     this.state = INITIAL_STATE
   }
 
+  handleClick = () => {
+    console.log(this.props.socket)
+    // this.props.socket.send("Hello")
+  }
+
   render() {
     const { rotate } = this.props
     let className = ""
@@ -24,8 +30,8 @@ class CommonDeck extends Component {
       <div className={"deck common" + className}>
         <div className="cards">
           <div className="cards-row common">
-            <img src={card} alt="" />
-            <img src={card} alt="" />
+            <img src={card} alt="" onClick={this.handleClick} />
+            <img src={card} alt="" onClick={this.handleClick} />
           </div>
         </div>
       </div>
@@ -33,4 +39,10 @@ class CommonDeck extends Component {
   }
 }
 
-export default CommonDeck
+const DeckWithSocket = props => (
+  <SocketContext.Consumer>
+    {socket => <div>{socket}</div>}
+  </SocketContext.Consumer>
+)
+
+export default DeckWithSocket

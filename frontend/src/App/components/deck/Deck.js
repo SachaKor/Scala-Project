@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import SocketContext from '../../utils/SocketContext'
 
 import card from '../../assets/cards/ace_of_spades.png'
 
@@ -38,4 +39,10 @@ class Deck extends Component {
   }
 }
 
-export default Deck
+const DeckWithSocket = props => (
+  <SocketContext.Consumer>
+    {socket => <Deck {...props} socket={socket} />}
+  </SocketContext.Consumer>
+)
+
+export default DeckWithSocket

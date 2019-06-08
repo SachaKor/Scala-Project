@@ -46,10 +46,16 @@ class App extends Component {
             <Route path={PATHS.HOME} exact component={BoardPage} />
             <Route path={PATHS.LOGIN} exact component={LoginPage} />
             <Route path={PATHS.SIGNUP} exact component={SignupPage} />
-            <SocketContext.Provider value={this.socket}>
-              <PrivateRoute path={PATHS.LOBBY} component={LobbyPage} />
-              <PrivateRoute path={PATHS.BOARD} component={BoardPage} />
-            </SocketContext.Provider>
+            <PrivateRoute path={PATHS.LOBBY} component={
+                <SocketContext.Provider value={"this.socket"}>
+                  {LobbyPage}
+                </SocketContext.Provider>
+              } />
+            <PrivateRoute path={PATHS.BOARD} component={
+                <SocketContext.Provider value={"this.socket"}>
+                  {BoardPage}
+                </SocketContext.Provider>
+              } />
           </Switch>
         </div>
       </Fragment>

@@ -39,10 +39,4 @@ class BoardPage extends Component {
   }
 }
 
-const BoardPageWithSocket = props => (
-  <SocketContext.Consumer>
-    {socket => <BoardPage {...props} socket={socket} />}
-  </SocketContext.Consumer>
-)
-
-export default BoardPageWithSocket
+export default BoardPage
