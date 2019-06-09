@@ -90,8 +90,8 @@ Once the match is finished, the new one can be launched with _Game.newMatch()_ m
 
 
 #### Security
-In order to secure the critical routes of our REST API, we used a unique Json Web Token for each user that contains the users' info.   
-To implement this functionality, we created a `securedAction` class that contains the logic to validate a users' request providing a JWT, and we use it on our secure routes.
-In addition to this, the websocket is secured in the same manner.
+In order to secure the critical routes of our REST API, we used the JWTs (Json Web Tokens). They are generated from the user's username and password. This way, when a user accesses a secured route, we can identify him by decoding the JWT and thus retrieving the username and password.
+To implement this functionality, we had to create a `securedAction` class which extends `ActionBuilder`. When the user tries to acces the secured route, his token is checked checked by it, and, if the token is proven to be valid, the request is forwarded to the next step. Otherwise an error is sent back to the client.
+In addition to this, the websocket is secured in a similar manner.
 
 ### Frontend
