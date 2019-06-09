@@ -93,16 +93,16 @@ Below is the schema of our MySQL database:
 ![](./img/youglouf-db.png)  
 
 #### Routes
-POST /users/login
+POST /users/login  
 user authentication with JSON payload of type: {"username": JohnDoe, "password": 1234}
 
-POST /users/signup
+POST /users/signup  
 user registration with JSON payload of type: {"username": JohnDoe, "password": 1234}
 
-GET /user/statistics
+GET /user/statistics  
 query user statistics on games history, user is identified with the JWT provided in the header
 
-GET /ws
+GET /ws  
 establish the connection between the client and the server using WebSockets, the JWT is provided through the query string (URL parameters)
 
 #### Security
@@ -128,5 +128,3 @@ When the client is in possession of the token, he will automatically be redirect
 Once the number of players reaches 4, the game starts and the user is automatically redirected on the game's page:
 
 ![](./img/game.jpg)
-
-*Note:* the game shown above does not correspond to the final version
