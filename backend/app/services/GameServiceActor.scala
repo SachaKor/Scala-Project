@@ -15,6 +15,7 @@ class GameServiceActor(out: ActorRef, user: User) extends Actor {
     "nb-players:" -> Game.players.length
   )
 
+
   override def receive: Receive = {
     case msg: InEvent => {
       msg.eventType match {
