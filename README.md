@@ -53,7 +53,13 @@ The points of every match are accumulated until one of the players reaches the 1
 The __winner__ of the game is the player having the minimum score.  
 
 ## Play Youglouf  
-First of all, the user has to log in...
+
+First of all, one has to sign up to the Youglouf app:  
+![](./img/signup.jpg)
+After logged in, the user can press the `JOIN GAME` button to join the waiting lobby:
+![](./img/lobby.jpg)
+Once the number of players reaches 4, the game starts:
+![](./img/game.jpg) 
 
 ## Implementation   
 Our main goal is to implement a multi-player game using WebSockets to maintain the state of the game across the different players and the server.
