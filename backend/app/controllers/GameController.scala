@@ -37,19 +37,15 @@ class GameController @Inject()(cc: ControllerComponents, userDAO: UserDAO)(impli
     Future.successful(request.getQueryString("token") match {
       case None => Left(Forbidden)
       case Some(jwtToken) =>
-        Logger.debug(jwtToken)
         if (JwtUtility.isValidToken(jwtToken)) {
           JwtUtility.decodePayload(jwtToken) match {
             case Some(payload) => {
-              Logger.debug(payload)
-
               val credentials = Json.parse(payload).validate[Login].get
               val findUser = userDAO.findByUsernameAndPassword(credentials.username, credentials.password)
               val u = Await.result(findUser, 1 second)
 
               u match {
                 case Some(user) => {
-                  Logger.debug(user.toString())
                   Right(
                     ActorFlow.actorRef { out =>
                       GameServiceActor.props(out, user)

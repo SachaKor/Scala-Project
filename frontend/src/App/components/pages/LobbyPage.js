@@ -22,6 +22,7 @@ class LobbyPage extends Component {
   handleMessages = (e) => {
     console.log('Received message from server.')
     const message = JSON.parse(e.data)
+    console.log(message)
     switch(message.eventType) {
       case 'joined':
         this.setState({
