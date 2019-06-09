@@ -38,13 +38,25 @@ object Game {
   }
 
   /**
+    * Returns the player with a given username
+    * @param username the username of the player to return
+    * @return the player with a given username if such a player exists, null otherwise
+    */
+  def getPlayerByUsername(username: String): Player = {
+    players.find(p => p.name == username) match {
+      case Some(p) => p
+      case None => null
+    }
+  }
+
+  /**
     * TODO: probably limit the number of players
     * Makes the player join the game
     * @param player the player that joins the game
     */
   def addPlayer(player: Player) = {
     if(!players.exists(p => p.name == player.name))
-      player :: players
+      players = player :: players
   }
 
   /**
