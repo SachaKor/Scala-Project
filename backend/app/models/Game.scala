@@ -89,6 +89,8 @@ object Game {
     matches = new Match(firstPlayer) :: matches
   }
 
+  def topOfOpenedDeck(): Card = matches.head.openedDeck.top()
+
   /* **************** Methods propagated to the Turn inner class ************************ */
   def curPlayer(): Player = matches.head.curRound.curTurn.player
   def pickCardFromOpenedDeck(): Card = matches.head.curRound.curTurn.pickCardFromOpenedDeck()
