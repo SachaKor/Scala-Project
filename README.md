@@ -90,19 +90,15 @@ For each table of our MySQL database, we have a custom Slick DAO that provides a
 
 #### Routes
 POST /users/login
-
 user authentication with JSON payload of type: {"username": JohnDoe, "password": 1234}
 
 POST /users/signup
-
 user registration with JSON payload of type: {"username": JohnDoe, "password": 1234}
 
 GET /user/statistics
-
 query user statistics on games history, user is identified with the JWT provided in the header
 
 GET /ws
-
 establish the connection between the client and the server using WebSockets, the JWT is provided through the query string (URL parameters)
 
 #### Security

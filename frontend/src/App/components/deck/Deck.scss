@@ -9,6 +9,10 @@
     height: 50%;
   }
 
+  &.top-deck {
+    transform: rotate(180deg);
+  }
+
   &.left-deck {
     transform: rotate(90deg);
     margin-right: 200px;

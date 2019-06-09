@@ -22,12 +22,12 @@ class BoardPage extends Component {
           Turn: Player 1
         </div>
         <div className="container-row top-row">
-          <Deck />
+          <Deck rotate={1} />
         </div>
         <div className="container-row middle-row">
-          <Deck rotate={1} />
+          <Deck rotate={2} />
           <CommonDeck />
-          <Deck rotate={-1} />
+          <Deck rotate={3} />
         </div>
         <div className="container-row bottom-row">
           <Deck />

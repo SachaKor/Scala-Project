@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import SocketContext from '../../utils/SocketContext'
 
-import card from '../../assets/cards/ace_of_spades.png'
+import card from '../../assets/cards/back.png'
 
 import './Deck.scss'
 
@@ -18,8 +18,9 @@ class Deck extends Component {
   render() {
     const { rotate } = this.props
     let className = ""
-    className += rotate === 1 ? " left-deck" : ""
-    className += rotate === -1 ? " right-deck" : ""
+    className += rotate === 1 ? " top-deck" : ""
+    className += rotate === 2 ? " left-deck" : ""
+    className += rotate === 3 ? " right-deck" : ""
 
     return (
       <div className={"deck" + className}>
