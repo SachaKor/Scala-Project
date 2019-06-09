@@ -86,7 +86,11 @@ method should be called. The argument of this method is the player who will star
 Once the match is finished, the new one can be launched with _Game.newMatch()_ method. The match must end after the last round was declared, then played. _Game.updateScores()_ method must be called after every match in order to add the match scores to the total ones. _Game.gameOver()_ method should be also called after each match to check if the game has finished (one of the players has reached the score above 100).
 
 #### DAO
-For each table of our MySQL database, we have a custom Slick DAO that provides all the necessary methods to perform basic CRUD operations.
+For each table of our MySQL database, we have a custom Slick DAO that provides all the necessary methods to perform basic CRUD operations.  
+
+#### Database  
+Below is the schema of our MySQL database:  
+![](./img/youglouf-db.png)  
 
 #### Routes
 POST /users/login
