@@ -55,11 +55,18 @@ The __winner__ of the game is the player having the minimum score.
 ## Play Youglouf  
 
 First of all, one has to sign up to the Youglouf app:  
-![](./img/signup.jpg)
-After logged in, the user can press the `JOIN GAME` button to join the waiting lobby:
-![](./img/lobby.jpg)
+![](./img/signup.jpg)  
+Then he/she has to log in:  
+![](./img/login.jpg)  
+
+After logged in, the user can press the `JOIN GAME` button to join the waiting lobby:  
+![](./img/lobby.jpg)  
+
 Once the number of players reaches 4, the game starts:
-![](./img/game.jpg) 
+![](./img/game.jpg)   
+
+*Note:* the game shown above does not correspond to the final version
+
 
 ## Implementation   
 Our main goal is to implement a multi-player game using WebSockets to maintain the state of the game across the different players and the server.
@@ -97,7 +104,7 @@ Once the match is finished, the new one can be launched with _Game.newMatch()_ m
 
 #### Security
 In order to secure the critical routes of our REST API, we used the JWTs (Json Web Tokens). They are generated from the user's username and password. This way, when a user accesses a secured route, we can identify him by decoding the JWT and thus retrieving the username and password.
-To implement this functionality, we had to create a `securedAction` class which extends `ActionBuilder`. When the user tries to acces the secured route, his token is checked checked by it, and, if the token is proven to be valid, the request is forwarded to the next step. Otherwise an error is sent back to the client.
+To implement this functionality, we had to create a `securedAction` class which extends `ActionBuilder`. When the user tries to access the secured route, his token is checked by it, and, if the token is proven to be valid, the request is forwarded to the next step. Otherwise an error is sent back to the client.
 In addition to this, the websocket is secured in a similar manner.
 
 ### Frontend
