@@ -94,12 +94,19 @@ object Game {
   def pickCardFromOpenedDeck(): Card = matches.head.curRound.curTurn.pickCardFromOpenedDeck()
   def pickCardFromClosedDeck(): Card = matches.head.curRound.curTurn.pickCardFromClosedDeck()
   def dropCardToOpenedDeck(): Card = matches.head.curRound.curTurn.dropCardToOpenedDeck()
-  def dropCardToClosedDeck(): Card = matches.head.curRound.curTurn.dropCardToClosedDeck()
   def replaceCard(index: Int): Card = matches.head.curRound.curTurn.replacePlayersCard(index)
   def viewPlayersCard(target: Player, index: Int): Card =
     matches.head.curRound.curTurn.viewPlayersCard(target, index)
   def exchangeCards(target: Player, hCardIndex: Int, tCardIndex: Int): Card =
     matches.head.curRound.curTurn.exchangeCards(target, hCardIndex, tCardIndex)
+  def declareLastRound() = matches.head.curRound.curTurn.declareLastRound()
+  def lastRoundIsDeclared(): Boolean = matches.head.curRound.curTurn.lastRoundIsDeclared()
+
+
+
+  /* **************** Methods controlling the game flow ************************ */
+  def nextTurn() = matches.head.curRound.nextTurn()
+  def nextRound(first: Player) = matches.head.nextRound(first)
 
   /* **************** Methods returning the game state ************************ */
   def getState(p: Player): JsValue = {

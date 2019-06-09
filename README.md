@@ -52,6 +52,9 @@ Otherwise, his score is equal to the accumulated score + 10.
 The points of every match are accumulated until one of the players reaches the 100 points threshold.
 The __winner__ of the game is the player having the minimum score.  
 
+## Play Youglouf  
+First of all, the user has to log in...
+
 ## Implementation   
 Our main goal is to implement a multi-player game using WebSockets to maintain the state of the game across the different players and the server.
 All accesses to the database (player registration, scores...) are made via a REST API using the Play framework.  
@@ -66,6 +69,25 @@ Accesses to the REST API are secured with a Json Web Token (JWT).
 ### Backend
 
 #### Model
+The Youglouf player is represented by the `Player` class. A player has a _name_ and a list
+of `Card`s. A `Card` is defined by it's _Rank_ (from _two_ to _ace_) and it's _Suit_ (_spades_, _hearts_, _diamonds_ and _clubs_). The deck is defined in the `Deck` class and implemented as a stack of `Card`s. The `Deck52` object is the implementation of the classic 52-card deck.  
+
+The state of the game is stored in the `Game` Scala object. It manages the decks (opened and closed), the players, the order in which they play their turns and the actions they can perform during their turns.  
+The `Game` is composed of the `Match`es, which are composed of the `Rounds`, which are composed of the `Turn`s.  
+Once the players joined the game via _Game.addPlayer()_ or _Game.addPlayers()_ method, the match can be initiated with the _newMatch()_ method. The first `Round` and `Turn` are automatically created. The player starting the game is randomly chosen. During the player's turn, several methods of the `Game` object can be called in order to perform the player's actions:
+* _pickCardFromOpenedDeck()_
+* _pickCardFromClosedDeck()_
+* _dropCardToOpenedDeck()_  
+* _replaceCard(index: Int)_
+* _viewPlayersCard(target: Player, index: Int)_  
+* _exchangeCards(target: Player, hCardIndex: Int, tCardIndex: Int)_  
+* _declareLastRound()_
+
+Once the player has finished his turn, the next `Turn` should be initiated with _Game.nextTurn()_ method.  
+Once the round is finished, the _Game.nextRound(first: Player)_
+method should be called. The argument of this method is the player who will start the next round. The first player must be chosen depending on the game state: if the last round has been declared, the player starting the next round is the one right after. Otherwise, it must be the player next to the one who started the last round in the clockwise order. To check if the last round was declared, the _Game.lastRoundIsDeclared()_ can be called.  
+Once the match is finished, the new one can be launched with _Game.newMatch()_ method. The match must end after the last round was declared, then played. _Game.updateScores()_ method must be called after every match in order to add the match scores to the total ones. _Game.gameOver()_ method should be also called after each match to check if the game has finished (one of the players has reached the score above 100).
+
 
 #### Security
 In order to secure the critical routes of our REST API, we used a unique Json Web Token for each user that contains the users' info.   
