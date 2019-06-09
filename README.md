@@ -85,6 +85,21 @@ Once the round is finished, the _Game.nextRound(first: Player)_
 method should be called. The argument of this method is the player who will start the next round. The first player must be chosen depending on the game state: if the last round has been declared, the player starting the next round is the one right after. Otherwise, it must be the player next to the one who started the last round in the clockwise order. To check if the last round was declared, the _Game.lastRoundIsDeclared()_ can be called.
 Once the match is finished, the new one can be launched with _Game.newMatch()_ method. The match must end after the last round was declared, then played. _Game.updateScores()_ method must be called after every match in order to add the match scores to the total ones. _Game.gameOver()_ method should be also called after each match to check if the game has finished (one of the players has reached the score above 100).
 
+#### DAO
+For each table of our MySQL database, we have a custom Slick DAO that provides all the necessary methods to perform basic CRUD operations.
+
+#### Routes
+POST /users/login :
+user authentication with JSON payload of type: {"username": JohnDoe, "password": 1234}
+
+POST /users/signup :
+user registration with JSON payload of type: {"username": JohnDoe, "password": 1234}
+
+GET /user/statistics:
+query user statistics on games history, user is identified with the JWT provided in the header
+
+GET /ws:
+establish the connection between the client and the server using WebSockets, the JWT is provided through the query string (URL parameters)
 
 #### Security
 In order to secure the critical routes of our REST API, we used the JWTs (Json Web Tokens). They are generated from the user's username and password. This way, when a user accesses a secured route, we can identify him by decoding the JWT and thus retrieving the username and password.
