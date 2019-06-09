@@ -4,7 +4,9 @@ import SocketContext from '../../utils/SocketContext'
 import './LobbyPage.scss'
 
 const INITIAL_STATE = {
-  socket: null
+  socket: null,
+  nbPlayers: 0,
+  joined: false
 }
 
 class LobbyPage extends Component {
@@ -15,6 +17,21 @@ class LobbyPage extends Component {
 
   componentDidMount() {
     this.connectSocket()
+  }
+
+  handleMessages = (e) => {
+    console.log('Received message from server.')
+    const message = JSON.parse(e.data)
+    switch(message.eventType) {
+      case 'joined':
+        this.setState({
+          nbPlayers: message.eventContent.nbPlayers,
+          joined: true
+        })
+        break;
+      default:
+        console.log("Not known")
+    }
   }
 
   connectSocket = () => {
@@ -33,9 +50,7 @@ class LobbyPage extends Component {
       console.log('connected')
     }
 
-    socket.onmessage = (e) => {
-      console.log('Message:', e.data);
-    };
+    socket.onmessage = this.handleMessages
 
     socket.onclose = (e) => {
       console.log('Socket is closed. Reconnect will be attempted in 1 second.', e.reason);
@@ -57,7 +72,10 @@ class LobbyPage extends Component {
   render() {
     return (
       <div className="lobby-page-root">
-        <div className="info-box">0/4 Players</div>
+        {this.state.joined ?
+          <div className="info-box">{this.state.nbPlayers}/4 Players</div> :
+          <div className="info-box">Click to join the game !</div>
+        }
         <button
           type="submit"
           className="generic-btn-white"

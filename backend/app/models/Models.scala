@@ -9,7 +9,7 @@ case class User(id: Option[Long], username: String, password: String)
 case class Login(username: String, password: String)
 
 // Event web socket
-case class InEvent(eventType: String, eventContent: JsValue)
+case class InEvent(eventType: String)
 
 // Event web socket
 case class OutEvent(eventType: String, eventContent: JsValue)
