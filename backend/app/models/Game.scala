@@ -43,15 +43,15 @@ object Game {
     * @param player the player that joins the game
     */
   def addPlayer(player: Player) = {
-    if(!players.contains(player)) players = player :: players
+    if(!players.exists(p => p.name == player.name))
+      player :: players
   }
 
   /**
     * Adds the players to the game
     * @param players the list of players to add
     */
-  def addPlayers(players: List[Player]) =
-    this.players = this.players ++ players.filter(!this.players.contains(_))
+  def addPlayers(players: List[Player]) = players.foreach(p => addPlayer(p))
 
   /**
     * Defines if the game is over.
@@ -88,6 +88,8 @@ object Game {
     }
     matches = new Match(firstPlayer) :: matches
   }
+
+  def topOfOpenedDeck(): Card = matches.head.openedDeck.top()
 
   /* **************** Methods propagated to the Turn inner class ************************ */
   def curPlayer(): Player = matches.head.curRound.curTurn.player

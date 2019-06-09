@@ -12,6 +12,20 @@ object GameServiceActor {
 
 
 class GameServiceActor(out: ActorRef, user: User) extends Actor {
+
+  def playerJoined(): JsValue = Json.obj(
+    "nbPlayers" -> Game.players.length
+  )
+
+  def getState(me: Player, myCards: List[Int], others: Map[Player, List[Int]]): JsValue = Json.obj(
+    "me" -> me.toJson(myCards),
+    "others" -> Json.toJson(
+      for( (k, v) <- others ) yield k.toJson(v)
+    ),
+    "openedDeck" -> Game.topOfOpenedDeck().toJson,
+    "curPlayer" -> Game.curPlayer().toJson(List()) // do not show the current player's cards
+  )
+
   override def receive: Receive = {
     case msg: InEvent => {
       msg.eventType match {
@@ -34,8 +48,4 @@ class GameServiceActor(out: ActorRef, user: User) extends Actor {
   override def postStop() {
     Logger.info("Closing the websocket connection.")
   }
-
-  def playerJoined(): JsValue = Json.obj(
-    "nbPlayers" -> Game.players.length
-  )
 }
