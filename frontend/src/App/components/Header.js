@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
+import { connect } from 'react-redux'
 
 import { PATHS } from '../routes'
 import './Header.scss'
@@ -15,6 +16,8 @@ class Header extends Component {
   }
 
   render() {
+    const { loggedIn } = this.props
+
     return (
       <div className="header-root">
         <div className="header-container">
@@ -25,7 +28,7 @@ class Header extends Component {
           </div>
           <div className="header-button">
             <Link to={PATHS.LOGIN}>
-              LOGIN
+              { loggedIn ? "LOG OUT" : "LOG IN" }
             </Link>
           </div>
         </div>
@@ -34,4 +37,14 @@ class Header extends Component {
   }
 }
 
-export default Header
+function mapStateToProps(state) {
+  const { loggedIn } = state.authentication
+
+  return {
+    loggedIn
+  }
+}
+
+const connectedLoginForm = connect(mapStateToProps)(Header)
+
+export default connectedLoginForm

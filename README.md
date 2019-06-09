@@ -1,3 +1,8 @@
+# SCALA Project - Youglouf
+
+## Goal
+Our project is a card game called Youglouf. Our goal is to implement Youglouf as a multiplayer video game written in SCALA.
+
 ## Youglouf
 Youglouf is a __card game__ for 3 or more players.
 It is usually played with a standard 52-card deck.
@@ -47,11 +52,24 @@ Otherwise, his score is equal to the accumulated score + 10.
 The points of every match are accumulated until one of the players reaches the 100 points threshold.
 The __winner__ of the game is the player having the minimum score.  
 
-### Implementation   
-Our main goal is to implement a multi-player game. If the time lets us, we would also like to implement an AI player.  
-We will use the database to store the players data: score statistics, the users' profiles, etc.
+## Implementation   
+Our main goal is to implement a multi-player game using WebSockets to maintain the state of the game across the different players and the server.
+All accesses to the database (player registration, scores...) are made via a REST API using the Play framework.  
+We use the database to store the players data: score statistics, the users' profiles, etc.
+Accesses to the REST API are secured with a Json Web Token (JWT).
 
-__Technologies__  
-* Backend: REST API  
-* Frontend: Vue.js  
+### Technologies
+* Backend: SCALA Play framework, REST API, JWT   
+* Frontend: React with Redux
 * Database: Slick
+
+### Backend
+
+#### Model
+
+#### Security
+In order to secure the critical routes of our REST API, we used a unique Json Web Token for each user that contains the users' info.   
+To implement this functionality, we created a `securedAction` class that contains the logic to validate a users' request providing a JWT, and we use it on our secure routes.
+In addition to this, the websocket is secured in the same manner.
+
+### Frontend

@@ -1,7 +1,8 @@
 package services
 
 import akka.actor.{Actor, ActorRef, PoisonPill, Props}
-import models.{Game, User}
+import models._
+import play.api.Logger
 
 object GameServiceActor {
   def props(out: ActorRef, user: User) = Props(new GameServiceActor(out, user))
@@ -9,20 +10,24 @@ object GameServiceActor {
 
 class GameServiceActor(out: ActorRef, user: User) extends Actor {
   override def receive: Receive = {
-    case msg: String if msg.contains("close") =>
-      out ! s"Closing the connection as requested"
-      self ! PoisonPill
-    case msg: String =>
-      msg match {
-        case "JOIN" => {
-
-          out ! s"Echo, Received the message: ${msg}"
+    case msg: InEvent => {
+      msg.eventType match {
+        case "join" => {
+          Logger.debug("JOIN EVENT")
+          out ! new OutEvent("Hello")
         }
-        case _ => out ! s"Echo, Received the message: ${msg}"
+        case "leave" => {
+          self ! PoisonPill
+        }
       }
+    }
+    case _ =>
+      Logger.debug("ERROR")
+      out ! new OutEvent("Error")
+
   }
 
   override def postStop() {
-    println("Closing the websocket connection.")
+    Logger.info("Closing the websocket connection.")
   }
 }

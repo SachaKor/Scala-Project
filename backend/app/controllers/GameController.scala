@@ -9,14 +9,14 @@ import play.api.mvc.{AbstractController, ControllerComponents, WebSocket}
 import services.GameServiceActor
 import play.api.Logger
 import play.api.libs.json._
+import play.api.libs.functional.syntax._
 import utilities.JwtUtility
-import models.Login
+import models.{Login, InEvent, OutEvent}
 import dao.UserDAO
-
 import scala.concurrent.{Await, Future}
 import scala.concurrent.duration._
-
-
+import play.api.mvc.WebSocket.MessageFlowTransformer
+import akka.stream.scaladsl._
 
 
 /**
@@ -26,13 +26,15 @@ import scala.concurrent.duration._
 @Singleton
 class GameController @Inject()(cc: ControllerComponents, userDAO: UserDAO)(implicit system: ActorSystem, mat: Materializer) extends AbstractController(cc) {
 
-  def socket = WebSocket.acceptOrResult[String, String] { request =>
-    Logger.debug("In socket")
-    Logger.debug(request.toString())
 
+  implicit val inEventFormat  = Json.format[InEvent]
+  implicit val outEventFormat = Json.format[OutEvent]
+  implicit val messageFlowTransformer = MessageFlowTransformer.jsonMessageFlowTransformer[InEvent, OutEvent]
+
+  def socket = WebSocket.acceptOrResult[InEvent, OutEvent] { request =>
     implicit val formatUserDetails = Json.format[Login]
 
-    Future.successful(request.headers.get("Sec-WebSocket-Protocol") match {
+    Future.successful(request.getQueryString("token") match {
       case None => Left(Forbidden)
       case Some(jwtToken) =>
         Logger.debug(jwtToken)
@@ -47,6 +49,7 @@ class GameController @Inject()(cc: ControllerComponents, userDAO: UserDAO)(impli
 
               u match {
                 case Some(user) => {
+                  Logger.debug(user.toString())
                   Right(
                     ActorFlow.actorRef { out =>
                       GameServiceActor.props(out, user)

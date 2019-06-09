@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 
 import Deck from '../deck/Deck'
 import CommonDeck from '../deck/CommonDeck'
-import card from '../../assets/cards/ace_of_spades.png'
 
 import './BoardPage.scss'
 

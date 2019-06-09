@@ -9,6 +9,7 @@ import play.api.libs.json._
 import play.api.libs.json.Reads._
 import play.api.libs.functional.syntax._
 import play.api.mvc.{AbstractController, ControllerComponents}
+
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
@@ -27,7 +28,6 @@ class HomeController @Inject()(cc: ControllerComponents, userDAO: UserDAO, secur
     // Use the default 'unapply' method (which acts like a reverted constructor) of the User case class if order to get
     // back the User object's arguments and pass them to the JsValue.
     )(unlift(User.unapply))
-
 
   // Convert a JsValue representation into a User-model object, which means that we deserialize the JSON.
   implicit val jsonToUser: Reads[User] = (
