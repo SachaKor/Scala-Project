@@ -14,7 +14,7 @@ class GameServiceActor(out: ActorRef, user: User) extends Actor {
       msg.eventType match {
         case "join" => {
           Logger.debug("JOIN EVENT")
-          out ! new OutEvent("Hello")
+          out ! new OutEvent("joined")
         }
         case "leave" => {
           self ! PoisonPill
