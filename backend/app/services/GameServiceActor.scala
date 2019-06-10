@@ -71,8 +71,6 @@ class GameServiceActor(out: ActorRef, user: User, actorSystem: ActorSystem) exte
             }
           }
 
-          
-
           /* ******* game flow control ****** */
           //if(Game.roundFinished()) // TODO Fix
             //Game.nextRound()

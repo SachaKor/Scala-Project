@@ -111,9 +111,6 @@ class BoardPage extends Component {
         <div className="hand">
           <img src={require(`../deck/PNG/${hand.rank}${hand.suit}.png`)} alt="" onClick={this.handleOpenedClick} />
         </div>
-        <div className="turn">
-          Turn: {curPlayer.name}
-        </div>
         <div className="container-row top-row">
           <div className="name">{others[0].name}</div>
           <Deck rotate={1} cards={INIT_PLAYER.cards} socket={socket} />

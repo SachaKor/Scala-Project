@@ -4,13 +4,13 @@ html, body {
   margin: 0;
   padding: 0;
   background-color: #fafafa;
-  overflow: hidden;
+  overflow-x: hidden;
   font-family: 'Roboto', sans-serif;
 }
 
 .main-container {
   width: 100vw;
-  height: calc(100vh - 70px);
+  height: calc(100% - 70px);
   background: radial-gradient(rgba(20, 93, 161, 1.0), rgba(6, 28, 49, 1.0));
 }
 
