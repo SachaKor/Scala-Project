@@ -24,7 +24,7 @@ class LobbyPage extends Component {
     const message = JSON.parse(e.data)
     console.log(message)
     switch(message.eventType) {
-      case 'joined':
+      case 'nbPlayers':
         this.setState({
           nbPlayers: message.eventContent.nbPlayers,
           joined: true

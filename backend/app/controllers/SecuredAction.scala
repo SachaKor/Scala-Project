@@ -10,8 +10,8 @@ import javax.inject.Inject
 
 import scala.concurrent.duration._
 import scala.concurrent.{Await, ExecutionContext, Future}
-import utilities.JwtUtility
 import play.api.Logger
+import utilities.JwtUtility
 
 case class UserRequest[A](user: User, request: Request[A]) extends WrappedRequest[A](request)
 

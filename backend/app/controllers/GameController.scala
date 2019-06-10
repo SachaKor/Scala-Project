@@ -1,6 +1,6 @@
 package controllers
 
-import akka.actor.ActorSystem
+import akka.actor.{ActorRef, ActorSystem}
 import akka.stream.Materializer
 import com.google.inject.Singleton
 import javax.inject.Inject
@@ -9,14 +9,13 @@ import play.api.mvc.{AbstractController, ControllerComponents, WebSocket}
 import services.GameServiceActor
 import play.api.Logger
 import play.api.libs.json._
-import play.api.libs.functional.syntax._
 import utilities.JwtUtility
-import models.{Login, InEvent, OutEvent}
+import models.{InEvent, Login, OutEvent}
 import dao.UserDAO
+
 import scala.concurrent.{Await, Future}
 import scala.concurrent.duration._
 import play.api.mvc.WebSocket.MessageFlowTransformer
-import akka.stream.scaladsl._
 
 
 /**
@@ -30,6 +29,7 @@ class GameController @Inject()(cc: ControllerComponents, userDAO: UserDAO)(impli
   implicit val inEventFormat  = Json.format[InEvent]
   implicit val outEventFormat = Json.format[OutEvent]
   implicit val messageFlowTransformer = MessageFlowTransformer.jsonMessageFlowTransformer[InEvent, OutEvent]
+
 
   def socket = WebSocket.acceptOrResult[InEvent, OutEvent] { request =>
     implicit val formatUserDetails = Json.format[Login]
@@ -48,7 +48,7 @@ class GameController @Inject()(cc: ControllerComponents, userDAO: UserDAO)(impli
                 case Some(user) => {
                   Right(
                     ActorFlow.actorRef { out =>
-                      GameServiceActor.props(out, user)
+                      GameServiceActor.props(out, user, system)
                     })
                 }
                 case None =>

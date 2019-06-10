@@ -3,7 +3,7 @@ package controllers
 import dao.UserDAO
 import models.User
 import models.Login
-import utilities.JwtUtility
+import utilities.{JwtUtility}
 import javax.inject.{Inject, Singleton}
 import play.api.libs.json._
 import play.api.libs.json.Reads._
