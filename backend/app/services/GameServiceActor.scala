@@ -62,6 +62,9 @@ class GameServiceActor(out: ActorRef, user: User, actorSystem: ActorSystem) exte
                 Game.dropCardToOpenedDeck()
               else
                 Game.pickCardFromOpenedDeck()
+            } else if(name == Game.curPlayer().name) {
+              if(Game.cardIsPicked())
+                Game.replaceCard(index.toInt)
             }
           }
           /* ******* game flow control ****** */

@@ -118,6 +118,7 @@ object Game {
   def cardPickedFromOpenedDeck(): Boolean = matches.head.curRound.curTurn.pickedFromOpenedDeck
   def turnFinished(): Boolean = matches.head.curRound.curTurn.turnFinished()
   def roundFinished(): Boolean = matches.head.curRound.roundFinished()
+  def matchFinished(): Boolean = matches.head.matchFinished()
 
   def hideCards(): Boolean = gameStarted
 
