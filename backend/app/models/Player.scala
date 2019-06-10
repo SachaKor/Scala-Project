@@ -23,6 +23,12 @@ class Player(n: String, c: List[Card]) {
     loop(index, cards)
   }
 
+  def dropCard(index: Int): Card = {
+    val card = seeCard(index)
+    cards = cards.filter(c => c != card)
+    card
+  }
+
   /**
     * Replaces one of the Player's card by another one
     * @param card the card to put to the Player's card set

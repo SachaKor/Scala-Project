@@ -67,6 +67,7 @@ class GameServiceActor(out: ActorRef, user: User, actorSystem: ActorSystem) exte
                 Game.replaceCard(index.toInt)
             }
           }
+
           /* ******* game flow control ****** */
           if(Game.roundFinished())
             Game.nextRound()
