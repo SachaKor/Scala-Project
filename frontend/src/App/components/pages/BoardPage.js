@@ -5,8 +5,26 @@ import CommonDeck from '../deck/CommonDeck'
 
 import './BoardPage.scss'
 
+const INIT_PLAYER = {
+  name: "",
+  cards: [
+    {rank: "closed", suit: "closed"},
+    {rank: "closed", suit: "closed"},
+    {rank: "closed", suit: "closed"},
+    {rank: "closed", suit: "closed"},
+  ]
+}
+
 const INITIAL_STATE = {
-  socker: null
+  socker: null,
+  curPlayer: INIT_PLAYER,
+  me: INIT_PLAYER,
+  others: [
+    INIT_PLAYER,
+    INIT_PLAYER,
+    INIT_PLAYER,
+    INIT_PLAYER
+  ]
 }
 
 class BoardPage extends Component {
@@ -55,6 +73,11 @@ class BoardPage extends Component {
     switch(message.eventType) {
       case 'getCards':
         console.log(message.eventContent)
+        this.setState({
+          curPlayer: message.eventContent.curPlayer,
+          me: message.eventContent.me,
+          others: message.eventContent.others,
+        })
         break;
       default:
         console.log("Unknown")
@@ -69,15 +92,15 @@ class BoardPage extends Component {
           Turn: Player 1
         </div>
         <div className="container-row top-row">
-          <Deck rotate={1} />
+          <Deck rotate={1} cards={INIT_PLAYER.cards} />
         </div>
         <div className="container-row middle-row">
-          <Deck rotate={2} />
+          <Deck rotate={2} cards={INIT_PLAYER.cards} />
           <CommonDeck />
-          <Deck rotate={3} />
+          <Deck rotate={3} cards={INIT_PLAYER.cards} />
         </div>
         <div className="container-row bottom-row">
-          <Deck />
+          <Deck rotate={-1} cards={this.state.me.cards} />
         </div>
       </div>
     )

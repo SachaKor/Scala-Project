@@ -22,12 +22,12 @@ class CommonDeck extends Component {
 
   render() {
     return (
-      <div className={"deck common"}>
-        <div className="cards">
-          <div className="cards-row common">
-            <img src={card} alt="" onClick={this.handleClick} />
-            <img src={card2} alt="" onClick={this.handleClick} />
-          </div>
+      <div className="deck common">
+        <div className="img-container common">
+          <img src={card} alt="" onClick={this.handleClick} />
+        </div>
+        <div className="img-container common">
+          <img src={card2} alt="" onClick={this.handleClick} />
         </div>
       </div>
     )

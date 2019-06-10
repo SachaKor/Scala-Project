@@ -15,26 +15,29 @@ class Deck extends Component {
     this.state = INITIAL_STATE
   }
 
+  componentDidMount() {
+    const height = this.container.clientHeight
+    this.setState({ height })
+  }
+
   render() {
-    const { rotate } = this.props
+    const { rotate, cards } = this.props
     let className = ""
     className += rotate === 1 ? " top-deck" : ""
     className += rotate === 2 ? " left-deck" : ""
     className += rotate === 3 ? " right-deck" : ""
 
+    let width = 0
+    if(this.state.height)
+      width = (this.state.height / 2 * 0.7) * Math.ceil(this.props.cards.length / 2)
+
     return (
-      <div className={"deck" + className}>
-        <div className="cards">
-          <div className="cards-row">
-            <img src={card} alt="" />
-            <img src={card} alt="" />
+      <div className={"deck" + className} ref={(div) => this.container = div} style={{width: width}}>
+        { cards.map((c) =>
+          <div className="img-container">
             <img src={card} alt="" />
           </div>
-          <div className="cards-row">
-            <img src={card} alt="" />
-            <img src={card} alt="" />
-          </div>
-        </div>
+        )}
       </div>
     )
   }
