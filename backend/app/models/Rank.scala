@@ -19,4 +19,5 @@ object Rank extends Enumeration {
   val king  = Value("K")
   val ace   = Value("A")
   val closed = Value("closed")
+  val empty  = Value("empty")
 }

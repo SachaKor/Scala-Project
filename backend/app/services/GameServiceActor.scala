@@ -87,11 +87,10 @@ class GameServiceActor(out: ActorRef, user: User, actorSystem: ActorSystem) exte
   def getState(me: Player, myCards: List[Int], others: Map[Player, List[Int]]): JsValue = Json.obj(
     "me" -> me.toJson(myCards),
     "hand" -> {
-      if (Game.getPlayerByUsername(me.name) == Game.getPlayerByUsername(Game.curPlayer().name))
-        if (Game.getHand() == null)
-          JsString("empty")
-        else
-          Game.getHand().toJson
+      if (Game.getHand() == null)
+        JsString("empty")
+      else if (Game.getPlayerByUsername(me.name) == Game.getPlayerByUsername(Game.curPlayer().name))
+        Game.getHand().toJson
       else new Card(Rank.closed, Suit.closed, -1).toJson
     },
     "others" -> Json.toJson(
