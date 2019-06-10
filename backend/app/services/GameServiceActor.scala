@@ -49,20 +49,15 @@ class GameServiceActor(out: ActorRef, user: User, actorSystem: ActorSystem) exte
           // update the game state
           Game.pickCardFromOpenedDeck()
           pickedFromOpenedDeck = true
-          
-          // send the response: only the current player can see the card in his hand, all other cards are closed
-          val me: Player = Game.getPlayerByUsername(user.username)
+
           actorSystem.actorSelection("/user/*/flowActor").tell(new InEvent("notifyChange"), self)
           out ! new OutEvent("pickCardFromOpenedDeck", Json.obj())
 
         }
         case "pickCardFromClosedDeck" => {
           //update the game state
-          val card: Card = Game.pickCardFromClosedDeck()
           pickedFromOpenedDeck = false
 
-          // send the response: only the current player can see the card in his hand, all other cards are closed
-          val me: Player = Game.getPlayerByUsername(user.username)
           actorSystem.actorSelection("/user/*/flowActor").tell(new InEvent("notifyChange"), self)
           out ! new OutEvent("pickCardFromClosedDeck", Json.obj())
         }
