@@ -69,7 +69,7 @@ class LobbyPage extends Component {
 
   handleJoin = () => {
     console.log('join')
-    this.state.socket.send(JSON.stringify({eventType: "join"}))
+    this.state.socket.send(JSON.stringify({eventType: "join", eventContent: {}}))
   }
 
   render() {

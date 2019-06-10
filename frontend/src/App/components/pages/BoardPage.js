@@ -52,7 +52,7 @@ class BoardPage extends Component {
 
     socket.onopen = () => {
       console.log('connected')
-      socket.send(JSON.stringify({eventType: "getCards"}))
+      socket.send(JSON.stringify({eventType: "getCards", eventContent: {}}))
     }
 
     socket.onclose = (e) => {
@@ -92,15 +92,12 @@ class BoardPage extends Component {
           picked
         })
         break
-      case 'pickCardFromOpenedDeck':
-        console.log(message.eventContent)
-        break
-      case 'pickCardFromClosedDeck':
+      case 'cardClick':
         console.log(message.eventContent)
         break
       case 'notifyChange':
         console.log(message.eventContent)
-        this.state.socket.send(JSON.stringify({eventType: "getCards"}))
+        this.state.socket.send(JSON.stringify({eventType: "getCards", eventContent: {}}))
         break
       default:
         console.log("Unknown")

@@ -15,9 +15,7 @@ object GameServiceActor {
 
 class GameServiceActor(out: ActorRef, user: User, actorSystem: ActorSystem) extends Actor {
 
-  /* ******************** controller flags ************************** */
-  var pickedFromOpenedDeck: Boolean = false // current player picked a card from the opened deck
-  var gameStarted = false // when true -> hide the cards
+  var gameStarted = false
 
   override def receive: Receive = {
     case msg: InEvent => {
@@ -48,23 +46,45 @@ class GameServiceActor(out: ActorRef, user: User, actorSystem: ActorSystem) exte
           out ! new OutEvent("getCards", getState(me, myCards, others))
         }
         case "cardClick" => {
+          Logger.debug("IN CARD CLICK")
+
+          val deck  = (msg.eventContent \ "deck").validate[String].get
+          val name  = (msg.eventContent \ "name").validate[String].get
+          val index = (msg.eventContent \ "index").validate[String].get
+
           // update the game state
-          Game.pickCardFromOpenedDeck()
-          pickedFromOpenedDeck = true
-          gameStarted = true
+          if(user.username == Game.curPlayer().name) {
+            Logger.debug("CURRENT PLAYER ACTION")
+            if(deck == "closed") {
+              Logger.debug("CLOSED DECK CLICK")
+              Game.pickCardFromOpenedDeck()
+              gameStarted = true
+            } else if(deck == "opened") {
+              Logger.debug("OPENED DECK CLICK")
+              Game.pickCardFromOpenedDeck()
+              gameStarted = true
+            }
+          }
 
           actorSystem.actorSelection("/user/*/flowActor").tell(InEvent("notifyChange", Json.obj()), self)
-          out ! new OutEvent("pickCardFromOpenedDeck", Json.obj())
+          out ! new OutEvent("cardClick", Json.obj())
 
         }
-        case "pickCardFromClosedDeck" => {
-          //update the game state
-          pickedFromOpenedDeck = false
-          gameStarted = true
-          Game.pickCardFromClosedDeck()
+        case "dropCardToOpenedDeck" => {
+          // update the game state
+          Game.dropCardToOpenedDeck()
 
+          // the hand should be empty now
+          val me: Player = Game.getPlayerByUsername(user.username)
           actorSystem.actorSelection("/user/*/flowActor").tell(InEvent("notifyChange", Json.obj()), self)
-          out ! new OutEvent("pickCardFromClosedDeck", Json.obj())
+          out ! new OutEvent("dropCardToOpenedDeck", Json.obj())
+        }
+        case "replaceCard" => {
+          // TODO: replace the index of the card to replace with one passed in the request
+          Game.replaceCard(0)
+          val me: Player = Game.getPlayerByUsername(user.username)
+          actorSystem.actorSelection("/user/*/flowActor").tell(InEvent("notifyChange", Json.obj()), self)
+          out ! new OutEvent("replaceCard", Json.obj())
         }
         case "notifyChange" => {
           out ! new OutEvent("notifyChange", Json.obj())

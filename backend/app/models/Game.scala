@@ -116,6 +116,9 @@ object Game {
   def declareLastRound() = matches.head.curRound.curTurn.declareLastRound()
   def lastRoundIsDeclared(): Boolean = matches.head.curRound.curTurn.lastRoundIsDeclared()
   def getHand(): Card = matches.head.curRound.curTurn.getHand()
+  def cardIsPicked(): Boolean = matches.head.curRound.curTurn.cardPicked
+  def cardIsDropped(): Boolean = matches.head.curRound.curTurn.cardDropped
+  def cardPickedFromOpenedDeck(): Boolean = matches.head.curRound.curTurn.pickedFromOpenedDeck
 
 
 
@@ -198,6 +201,14 @@ object Game {
 
         private var hand: Card = _
 
+        /**
+          * picked && pickedFromOpenedDeck => pickedFromOpenedDeck
+          * picked && !pickedFromOpenedDeck => pickedFromClosedDeck
+          */
+        var cardPicked: Boolean = false
+        var cardDropped: Boolean = false
+        var pickedFromOpenedDeck: Boolean = false
+
         def getHand(): Card = hand
 
         /**
@@ -210,6 +221,7 @@ object Game {
           if (deck.isEmpty) null
           else if (hand == null) {
             hand = deck.pickCard()
+            cardPicked = true
             hand
           }
           else throw new Error("The player " + player.name + " holds a card already")
@@ -225,6 +237,7 @@ object Game {
           val droppedCard = hand
           deck.putCard(hand)
           hand = null
+          cardDropped = true
           droppedCard
         }
 
@@ -234,6 +247,7 @@ object Game {
           */
         def pickCardFromOpenedDeck(): Card = {
           val picked = pickCard(openedDeck)
+          pickedFromOpenedDeck = true
           picked
         }
 
@@ -243,6 +257,7 @@ object Game {
           */
         def pickCardFromClosedDeck(): Card = {
           val picked = pickCard(Deck52.deck)
+          pickedFromOpenedDeck = false
           picked
         }
 
