@@ -92,7 +92,7 @@ class GameServiceActor(out: ActorRef, user: User, actorSystem: ActorSystem) exte
     "me" -> me.toJson(myCards),
     "hand" -> {
       if (Game.getHand() == null)
-        JsString("empty")
+        new Card(Rank.closed, Suit.closed, -1).toJson
       else if (Game.getPlayerByUsername(me.name) == Game.getPlayerByUsername(Game.curPlayer().name))
         Game.getHand().toJson
       else new Card(Rank.closed, Suit.closed, -1).toJson
