@@ -44,12 +44,24 @@ class GameServiceActor(out: ActorRef, user: User, actorSystem: ActorSystem) exte
           out ! new OutEvent("getCards", getState(me, myCards, others))
         }
         case "pickCardFromOpenedDeck" => {
-          val card: Card = Game.pickCardFromClosedDeck()
+          // update the game state
+          Game.pickCardFromClosedDeck()
           pickedFromOpenedDeck = true
+          
+          // send the response: only the current player can see the card in his hand, all other cards are closed
+          val me: Player = Game.getPlayerByUsername(user.username)
+          out ! new OutEvent("pickCardFromOpenedDeck", getState(me, List(),
+            Game.players.filter(p => p != me).map(p => p -> List()).toMap))
         }
         case "pickCardFromClosedDeck" => {
+          //update the game state
           val card: Card = Game.pickCardFromClosedDeck()
           pickedFromOpenedDeck = false
+
+          // send the response: only the current player can see the card in his hand, all other cards are closed
+          val me: Player = Game.getPlayerByUsername(user.username)
+          out ! new OutEvent("pickCardFromOpenedDeck", getState(me, List(),
+            Game.players.filter(p => p != me).map(p => p -> List()).toMap))
         }
         case "leave" => {
           self ! PoisonPill
