@@ -20,9 +20,15 @@ class GameServiceActor(out: ActorRef, user: User, actorSystem: ActorSystem) exte
           Logger.debug("JOIN EVENT")
           Game.addPlayer(new Player(user.username, List()))
           actorSystem.actorSelection("/user/*/flowActor").tell(new InEvent("nbPlayers"), self)
+          if(Game.players.length == 4) {
+            actorSystem.actorSelection("/user/*/flowActor").tell(new InEvent("startGame"), self)
+          }
         }
         case "nbPlayers" => {
           out ! new OutEvent("nbPlayers", playerJoined())
+        }
+        case "startGame" => {
+          out ! new OutEvent("startGame", Json.obj())
         }
         case "leave" => {
           self ! PoisonPill

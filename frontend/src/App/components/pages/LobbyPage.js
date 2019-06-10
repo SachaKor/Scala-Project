@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import SocketContext from '../../utils/SocketContext'
+import { history } from '../../../helpers'
 
 import './LobbyPage.scss'
 
@@ -30,6 +31,9 @@ class LobbyPage extends Component {
           joined: true
         })
         break;
+        case 'startGame':
+          history.push('/board')
+          break;
       default:
         console.log("Not known")
     }
