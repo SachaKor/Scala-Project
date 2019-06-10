@@ -83,7 +83,21 @@ Once the players joined the game via _Game.addPlayer()_ or _Game.addPlayers()_ m
 Once the player has finished his turn, the next `Turn` should be initiated with _Game.nextTurn()_ method.
 Once the round is finished, the _Game.nextRound(first: Player)_
 method should be called. The argument of this method is the player who will start the next round. The first player must be chosen depending on the game state: if the last round has been declared, the player starting the next round is the one right after. Otherwise, it must be the player next to the one who started the last round in the clockwise order. To check if the last round was declared, the _Game.lastRoundIsDeclared()_ can be called.
-Once the match is finished, the new one can be launched with _Game.newMatch()_ method. The match must end after the last round was declared, then played. _Game.updateScores()_ method must be called after every match in order to add the match scores to the total ones. _Game.gameOver()_ method should be also called after each match to check if the game has finished (one of the players has reached the score above 100).
+Once the match is finished, the new one can be launched with _Game.newMatch()_ method. The match must end after the last round was declared, then played. _Game.updateScores()_ method must be called after every match in order to add the match scores to the total ones. _Game.gameOver()_ method should be also called after each match to check if the game has finished (one of the players has reached the score above 100).  
+
+#### Controllers  
+The users are managed in `app/controllers/HomeController` and implemented as the REST API.  
+The game flow is controlled by `app/controllers/GameController` and communicates with the clients via Play's WebSockets.  
+Below are the schemas describing the the Game, Matches, Rounds and Turns flows:  
+
+| Game | Match |    
+|:----:|:-----:|  
+| ![](./img/Scala-Game.png) | ![](./img/Scala-Match.png) |  
+
+| Round | Turn |  
+|:-----:|:----:|  
+| ![](./img/Scala-Round.png) | ![](./img/Scala-Turn.png) |
+
 
 #### DAO
 For each table of our MySQL database, we have a custom Slick DAO that provides all the necessary methods to perform basic CRUD operations.  
