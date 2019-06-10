@@ -14,6 +14,8 @@ class Deck(c: List[Card]) {
     top
   }
 
+  def isEmpty(): Boolean = cards.isEmpty
+
   /**
     * Shows the card on the top of the deck
     * @return he card on the top of the deck

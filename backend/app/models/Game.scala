@@ -206,7 +206,8 @@ object Game {
           * @return the card picked
           */
         private def pickCard(deck: Deck): Card = {
-          if (hand == null) {
+          if (deck.isEmpty) null
+          else if (hand == null) {
             hand = deck.pickCard()
             hand
           }
