@@ -9,7 +9,17 @@ It is usually played with a standard 52-card deck.
 As most of card games, it is based on luck, but also requires some strategy skills.
 Our goal is to create a web version of the game that would replace the real cards and allow playing Youglouf anywhere anytime.
 
-### Rules
+## Deployment instructions  
+1. Start MySQL server and execute the script in `backend/sql/script.sql`  
+2. In the `/frontend`:
+```
+> npm i  
+> npm start
+```  
+3. Import the backend project in Intellij
+4. Start the project with the `sbt task run`
+
+## Rules
 In the beginning of the game, every player receives 4 cards and can see 2 of them, but only __once__.
 The rest of the cards are placed in the __closed deck__ in middle of the table.
 Then the round begins. Every player plays once per round, in the clockwise order.
@@ -61,7 +71,7 @@ Accesses to the REST API are secured with a Json Web Token (JWT).
 ### Technologies
 * Backend: SCALA Play framework, REST API, JWT
 * Frontend: React with Redux
-* Database: MySQL acced by Slick
+* Database: MySQL accessed by Slick
 
 ### Backend
 
