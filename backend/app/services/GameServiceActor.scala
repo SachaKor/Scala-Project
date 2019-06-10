@@ -18,6 +18,7 @@ class GameServiceActor(out: ActorRef, user: User, actorSystem: ActorSystem) exte
   /* ******************** controller flags ************************** */
   var pickedFromOpenedDeck: Boolean = false // current player picked a card from the opened deck
   var gameStarted = false // when true -> hide the cards
+  var cardDropped = false
 
   override def receive: Receive = {
     case msg: InEvent => {
@@ -61,11 +62,22 @@ class GameServiceActor(out: ActorRef, user: User, actorSystem: ActorSystem) exte
         }
         case "pickCardFromClosedDeck" => {
           //update the game state
-          val card: Card = Game.pickCardFromClosedDeck()
+          Game.pickCardFromClosedDeck()
           pickedFromOpenedDeck = false
           gameStarted = true
 
           // send the response: only the current player can see the card in his hand, all other cards are closed
+          val me: Player = Game.getPlayerByUsername(user.username)
+          actorSystem.actorSelection("/user/*/flowActor").tell(new InEvent("notifyChange"), self)
+          out ! new OutEvent("pickCardFromClosedDeck", Json.obj())
+        }
+        case "dropCardToOpenedDeck" => {
+          // update the game state
+          Game.dropCardToOpenedDeck()
+          pickedFromOpenedDeck = false
+          cardDropped = true
+
+          // the hand should be empty now
           val me: Player = Game.getPlayerByUsername(user.username)
           actorSystem.actorSelection("/user/*/flowActor").tell(new InEvent("notifyChange"), self)
           out ! new OutEvent("pickCardFromClosedDeck", Json.obj())
