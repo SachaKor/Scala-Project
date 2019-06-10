@@ -87,10 +87,6 @@ class BoardPage extends Component {
       case 'getCards':
         console.log(message.eventContent)
         this.setCurrentState(message.eventContent)
-        const picked = message.eventContent.hand.suit !== "empty" && message.eventContent.hand.suit !== "closed"
-        this.setState({
-          picked
-        })
         break
       case 'cardClick':
         console.log(message.eventContent)
@@ -119,6 +115,7 @@ class BoardPage extends Component {
           Turn: {curPlayer.name}
         </div>
         <div className="container-row top-row">
+          <div className="name">{others[0].name}</div>
           <Deck rotate={1} cards={INIT_PLAYER.cards} socket={socket} />
         </div>
         <div className="container-row middle-row">

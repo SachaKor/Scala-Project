@@ -68,11 +68,16 @@ class GameServiceActor(out: ActorRef, user: User, actorSystem: ActorSystem) exte
             }
           }
 
+
+
+
           /* ******* game flow control ****** */
-          if(Game.roundFinished())
-            Game.nextRound()
-          if(Game.turnFinished())
+          //if(Game.roundFinished()) // TODO Fix
+            //Game.nextRound()
+          if(Game.turnFinished()) {
+            Logger.debug("TURN FINISHED")
             Game.nextTurn()
+          }
 
           actorSystem.actorSelection("/user/*/flowActor").tell(InEvent("notifyChange", Json.obj()), self)
           out ! new OutEvent("cardClick", Json.obj())
