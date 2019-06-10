@@ -148,7 +148,7 @@ object Game {
     var lastRound = false
     // contains every Player's score
     var matchScores: Map[Player, Int] = players.map(p => (p, 0)).toMap
-    var openedDeck = new Deck(List())
+    var openedDeck = new Deck(Deck52.deck.cards)
     var curRound = new Round(first)
     def curPlayer(): Player = curRound.getCurPlayer()
 
