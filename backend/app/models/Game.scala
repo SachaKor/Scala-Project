@@ -115,6 +115,7 @@ object Game {
     matches.head.curRound.curTurn.exchangeCards(target, hCardIndex, tCardIndex)
   def declareLastRound() = matches.head.curRound.curTurn.declareLastRound()
   def lastRoundIsDeclared(): Boolean = matches.head.curRound.curTurn.lastRoundIsDeclared()
+  def getHand(): Card = matches.head.curRound.curTurn.getHand()
 
 
 
@@ -196,6 +197,8 @@ object Game {
         private var lastRoundDeclared = false
 
         private var hand: Card = _
+
+        def getHand(): Card = hand
 
         /**
           * The player picks a card from a deck
