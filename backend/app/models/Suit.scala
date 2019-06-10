@@ -5,10 +5,10 @@ package models
   */
 object Suit extends Enumeration {
   type Suit = Value
-  val spades   = Value("spades")   // "\u2660"
-  val hearts   = Value("hearts")   // "\u2665"
-  val diamonds = Value("diamonds") // "\u2666"
-  val clubs    = Value("clubs")    // "\u2663"
+  val spades   = Value("S")   // "\u2660"
+  val hearts   = Value("H")   // "\u2665"
+  val diamonds = Value("D") // "\u2666"
+  val clubs    = Value("C")    // "\u2663"
   val closed   = Value("closed")
 }
 

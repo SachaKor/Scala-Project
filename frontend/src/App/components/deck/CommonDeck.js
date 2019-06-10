@@ -16,19 +16,27 @@ class CommonDeck extends Component {
     this.state = INITIAL_STATE
   }
 
-  handleClick = () => {
-    this.props.socket.send(JSON.stringify({type: "join"}))
+  handleClosedClick = () => {
+    this.props.socket.send(JSON.stringify({eventType: "pickCardFromOpenedDeck"}))
+  }
+
+  handleOpenedClick = () => {
+    this.props.socket.send(JSON.stringify({eventType: "pickCardFromClosedDeck"}))
   }
 
   render() {
+    const { openedDeck } = this.props
+    console.log(openedDeck)
+
     return (
       <div className="deck common">
         <div className="img-container common">
-          <img src={card} alt="" onClick={this.handleClick} />
+          <img src={require('./PNG/closedclosed.png')} alt="" onClick={this.handleClosedClick} />
         </div>
-        <div className="img-container common">
-          <img src={card2} alt="" onClick={this.handleClick} />
-        </div>
+        { this.props.openedDeck && this.props.openedDeck !== "empty" &&
+          (<div className="img-container common">
+            <img src={require(`./PNG/${openedDeck.rank}${openedDeck.suit}.png`)} alt="" onClick={this.handleOpenedClick} />
+          </div>) }
       </div>
     )
   }

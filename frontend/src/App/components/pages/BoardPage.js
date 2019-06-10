@@ -24,7 +24,8 @@ const INITIAL_STATE = {
     INIT_PLAYER,
     INIT_PLAYER,
     INIT_PLAYER
-  ]
+  ],
+  openedDeck: null,
 }
 
 class BoardPage extends Component {
@@ -77,6 +78,8 @@ class BoardPage extends Component {
           curPlayer: message.eventContent.curPlayer,
           me: message.eventContent.me,
           others: message.eventContent.others,
+          openedDeck: message.eventContent.openedDeck,
+          closedDeck: message.eventContent.closedDeck,
         })
         break;
       default:
@@ -85,22 +88,24 @@ class BoardPage extends Component {
   }
 
   render() {
+    const { socket } = this.state
     return (
       <div className="card-decks-container">
-        <div></div>
         <div className="turn">
-          Turn: Player 1
+          Turn: {this.state.curPlayer.name}
         </div>
         <div className="container-row top-row">
-          <Deck rotate={1} cards={INIT_PLAYER.cards} />
+          <Deck rotate={1} cards={INIT_PLAYER.cards} socket={socket} />
         </div>
         <div className="container-row middle-row">
-          <Deck rotate={2} cards={INIT_PLAYER.cards} />
-          <CommonDeck />
-          <Deck rotate={3} cards={INIT_PLAYER.cards} />
+          <Deck rotate={2} cards={INIT_PLAYER.cards} socket={socket} />
+          <CommonDeck
+            openedDeck={this.state.openedDeck}
+          />
+          <Deck rotate={3} cards={INIT_PLAYER.cards} socket={socket} />
         </div>
         <div className="container-row bottom-row">
-          <Deck rotate={-1} cards={this.state.me.cards} />
+          <Deck rotate={-1} cards={this.state.me.cards} socket={socket} />
         </div>
       </div>
     )

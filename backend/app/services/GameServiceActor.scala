@@ -39,19 +39,15 @@ class GameServiceActor(out: ActorRef, user: User, actorSystem: ActorSystem) exte
         case "getCards" => {
           Logger.info("In getCards")
           val me: Player = Game.getPlayerByUsername(user.username)
-          Logger.debug(me.toString)
           val myCards: List[Int] = List(0, 1) // the player can see his first two cards
-          Logger.debug(myCards.toString)
           // the player cannot see others' cards
           val others: Map[Player, List[Int]] = Game.players.filter(p => p != me).map(p => p -> List()).toMap
-          Logger.debug(others.toString)
-          Logger.debug(getState(me, myCards, others).toString())
 
           out ! new OutEvent("getCards", getState(me, myCards, others))
         }
         case "pickCardFromOpenedDeck" => {
           // update the game state
-          Game.pickCardFromClosedDeck()
+          Game.pickCardFromOpenedDeck()
           pickedFromOpenedDeck = true
           
           // send the response: only the current player can see the card in his hand, all other cards are closed
@@ -66,7 +62,7 @@ class GameServiceActor(out: ActorRef, user: User, actorSystem: ActorSystem) exte
 
           // send the response: only the current player can see the card in his hand, all other cards are closed
           val me: Player = Game.getPlayerByUsername(user.username)
-          out ! new OutEvent("pickCardFromOpenedDeck", getState(me, List(),
+          out ! new OutEvent("pickCardFromClosedDeck", getState(me, List(),
             Game.players.filter(p => p != me).map(p => p -> List()).toMap))
         }
         case "leave" => {
