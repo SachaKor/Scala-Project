@@ -1,12 +1,14 @@
 package models
 
+import services.GameServiceActor
+
 object Main extends App {
 
 //  testCard()
 //  testDeck()
 //  testPlayer()
-//  testGame()
-  testGameState()
+  testGame()
+//  testGameState()
 
   def testGameState() = {
     val players: List[Player] = List(
@@ -44,7 +46,10 @@ object Main extends App {
     val replaced = Game.replaceCard(0)
     println(curPlayer.name + " replaced " + replaced + " card")
     println(curPlayer.toString)
-
+    val sasha = Game.getPlayerByUsername("Sasha")
+    val ps = Game.getPlayerByUsername("PS")
+    val noname = Game.getPlayerByUsername("unknown")
+    println(sasha.toString + "  " + ps.toString)
   }
 
   def testPlayer() = {

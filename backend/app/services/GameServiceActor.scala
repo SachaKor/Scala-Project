@@ -21,9 +21,9 @@ class GameServiceActor(out: ActorRef, user: User, actorSystem: ActorSystem) exte
           Game.addPlayer(new Player(user.username, List()))
           actorSystem.actorSelection("/user/*/flowActor").tell(new InEvent("nbPlayers"), self)
           if(Game.players.length == 4) {
+            Game.newMatch() // init the first match
             actorSystem.actorSelection("/user/*/flowActor").tell(new InEvent("startGame"), self)
           }
-          Game.newMatch() // init the first game
         }
         case "nbPlayers" => {
           out ! new OutEvent("nbPlayers", playerJoined())
