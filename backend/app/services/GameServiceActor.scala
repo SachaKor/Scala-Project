@@ -17,6 +17,7 @@ class GameServiceActor(out: ActorRef, user: User, actorSystem: ActorSystem) exte
 
   /* ******************** controller flags ************************** */
   var pickedFromOpenedDeck: Boolean = false // current player picked a card from the opened deck
+  var gameStarted = false // when true -> hide the cards
 
   override def receive: Receive = {
     case msg: InEvent => {
@@ -39,7 +40,8 @@ class GameServiceActor(out: ActorRef, user: User, actorSystem: ActorSystem) exte
         case "getCards" => {
           Logger.info("In getCards")
           val me: Player = Game.getPlayerByUsername(user.username)
-          val myCards: List[Int] = List(0, 1) // the player can see his first two cards
+          // the player can see his first two cards only in the beginning of the game
+          val myCards: List[Int] = if(!gameStarted) List(0, 1) else List()
           // the player cannot see others' cards
           val others: Map[Player, List[Int]] = Game.players.filter(p => p != me).map(p => p -> List()).toMap
 
@@ -49,7 +51,8 @@ class GameServiceActor(out: ActorRef, user: User, actorSystem: ActorSystem) exte
           // update the game state
           Game.pickCardFromOpenedDeck()
           pickedFromOpenedDeck = true
-          
+          gameStarted = true
+
           // send the response: only the current player can see the card in his hand, all other cards are closed
           val me: Player = Game.getPlayerByUsername(user.username)
           actorSystem.actorSelection("/user/*/flowActor").tell(new InEvent("notifyChange"), self)
@@ -60,6 +63,7 @@ class GameServiceActor(out: ActorRef, user: User, actorSystem: ActorSystem) exte
           //update the game state
           val card: Card = Game.pickCardFromClosedDeck()
           pickedFromOpenedDeck = false
+          gameStarted = true
 
           // send the response: only the current player can see the card in his hand, all other cards are closed
           val me: Player = Game.getPlayerByUsername(user.username)
