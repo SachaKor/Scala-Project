@@ -20,6 +20,21 @@ class Deck extends Component {
     this.setState({ height })
   }
 
+  handleClick = (i) => {
+    this.props.socket.send(JSON.stringify({
+      eventType: "cardClick",
+      eventContent: {
+        index: i,
+        name: this.props.name,
+        deck: "nope"
+      }
+    }))
+  }
+
+  handleNothing = () => {
+    console.log('Denied')
+  }
+
   render() {
     const { rotate, cards } = this.props
     let className = ""
@@ -35,7 +50,7 @@ class Deck extends Component {
       <div className={"deck" + className} ref={(div) => this.container = div} style={{width: width}}>
         { cards.map((c, i) =>
           <div className="img-container" key={`${i}${c.rank}${c.suit}`}>
-            <img src={require(`./PNG/${c.rank}${c.suit}.png`)} alt="product" />
+            <img src={require(`./PNG/${c.rank}${c.suit}.png`)} alt="product" onClick={() => this.handleClick(i)} />
           </div>
         )}
       </div>

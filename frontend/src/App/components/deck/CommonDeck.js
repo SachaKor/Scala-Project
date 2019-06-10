@@ -13,24 +13,41 @@ class CommonDeck extends Component {
     this.state = INITIAL_STATE
   }
 
-  handleClosedClick = () => {
-    this.props.socket.send(JSON.stringify({eventType: "pickCardFromClosedDeck"}))
+  handleClick = (deck) => {
+    this.props.socket.send(JSON.stringify({
+      eventType: "cardClick",
+      eventContent: {
+        index: "nope",
+        name: "nope",
+        deck: deck
+      }
+    }))
   }
 
-  handleOpenedClick = () => {
-    this.props.socket.send(JSON.stringify({eventType: "pickCardFromOpenedDeck"}))
+  handleNothing = () => {
+    console.log('Denied')
   }
 
   render() {
     const { openedDeck } = this.props
+    // let handleOpened = this.handleNothing
+    // let handleClosed = this.handleNothing
+    // if(turn) {
+    //   if(picked) {
+    //     handleOpened = this.handleDropOpenedClick
+    //   } else {
+    //     handleClosed = this.handlePickClosedClick
+    //     handleOpened = this.handlePickOpenedClick
+    //   }
+    // }
 
     return (
       <div className="deck common">
         <div className="img-container common">
-          <img src={require('./PNG/closedclosed.png')} alt="" onClick={this.handleClosedClick} />
+          <img src={require('./PNG/closedclosed.png')} alt="" onClick={() => this.handleClick("closed")} />
         </div>
         <div className="img-container common">
-          <img src={require(`./PNG/${openedDeck.rank}${openedDeck.suit}.png`)} alt="" onClick={this.handleOpenedClick} />
+          <img src={require(`./PNG/${openedDeck.rank}${openedDeck.suit}.png`)} alt="" onClick={() => this.handleClick("opened")} />
         </div>
       </div>
     )

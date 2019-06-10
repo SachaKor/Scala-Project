@@ -204,6 +204,7 @@ object Game {
           * The player picks a card from a deck
           * @param deck the deck to pick from
           * @return the card picked
+          *         if the deck is empty, null is returned
           */
         private def pickCard(deck: Deck): Card = {
           if (deck.isEmpty) null

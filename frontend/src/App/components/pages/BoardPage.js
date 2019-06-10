@@ -69,13 +69,12 @@ class BoardPage extends Component {
   }
 
   setCurrentState = (content) => {
-    const { curPlayer, me, others, openedDeck, closedDeck, hand } = content
+    const { curPlayer, me, others, openedDeck, hand } = content
     this.setState({
       curPlayer,
       me,
       others,
       openedDeck,
-      closedDeck,
       hand
     })
   }
@@ -109,7 +108,8 @@ class BoardPage extends Component {
   }
 
   render() {
-    const { socket, openedDeck, closedDeck, hand, curPlayer, me, others, picked } = this.state
+    const { socket, openedDeck, hand, curPlayer, me, others } = this.state
+
     return (
       <div className="card-decks-container">
         <div className="turn">
@@ -133,7 +133,7 @@ class BoardPage extends Component {
           <Deck rotate={3} cards={INIT_PLAYER.cards} socket={socket} />
         </div>
         <div className="container-row bottom-row">
-          <Deck rotate={-1} cards={me.cards} socket={socket} picked={picked} />
+          <Deck rotate={-1} cards={me.cards} socket={socket} name={me.name} />
         </div>
       </div>
     )

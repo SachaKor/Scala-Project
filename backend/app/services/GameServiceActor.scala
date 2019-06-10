@@ -3,7 +3,7 @@ package services
 import akka.actor.{Actor, ActorRef, ActorSystem, PoisonPill, Props}
 import models._
 import play.api.Logger
-import play.api.libs.json
+import play.api.libs.json._
 import play.api.libs.json.{JsNumber, JsString, JsValue, Json}
 import play.api.mvc.Action
 import play.mvc.BodyParser
@@ -17,6 +17,7 @@ class GameServiceActor(out: ActorRef, user: User, actorSystem: ActorSystem) exte
 
   /* ******************** controller flags ************************** */
   var pickedFromOpenedDeck: Boolean = false // current player picked a card from the opened deck
+  var gameStarted = false // when true -> hide the cards
 
   override def receive: Receive = {
     case msg: InEvent => {
@@ -24,10 +25,10 @@ class GameServiceActor(out: ActorRef, user: User, actorSystem: ActorSystem) exte
         case "join" => {
           Logger.debug("JOIN EVENT")
           Game.addPlayer(new Player(user.username, List()))
-          actorSystem.actorSelection("/user/*/flowActor").tell(new InEvent("nbPlayers"), self)
+          actorSystem.actorSelection("/user/*/flowActor").tell(InEvent("nbPlayers", Json.obj()), self)
           if(Game.players.length == 2) {
             Game.newMatch() // init the first match
-            actorSystem.actorSelection("/user/*/flowActor").tell(new InEvent("startGame"), self)
+            actorSystem.actorSelection("/user/*/flowActor").tell(InEvent("startGame", Json.obj()), self)
           }
         }
         case "nbPlayers" => {
@@ -39,29 +40,33 @@ class GameServiceActor(out: ActorRef, user: User, actorSystem: ActorSystem) exte
         case "getCards" => {
           Logger.info("In getCards")
           val me: Player = Game.getPlayerByUsername(user.username)
-          val myCards: List[Int] = List(0, 1) // the player can see his first two cards
+          // the player can see his first two cards only in the beginning of the game
+          val myCards: List[Int] = if(!gameStarted) List(0, 1) else List()
           // the player cannot see others' cards
           val others: Map[Player, List[Int]] = Game.players.filter(p => p != me).map(p => p -> List()).toMap
 
           out ! new OutEvent("getCards", getState(me, myCards, others))
         }
-        case "pickCardFromOpenedDeck" => {
+        case "cardClick" => {
           // update the game state
           Game.pickCardFromOpenedDeck()
           pickedFromOpenedDeck = true
+          gameStarted = true
 
-          actorSystem.actorSelection("/user/*/flowActor").tell(new InEvent("notifyChange"), self)
+          actorSystem.actorSelection("/user/*/flowActor").tell(InEvent("notifyChange", Json.obj()), self)
           out ! new OutEvent("pickCardFromOpenedDeck", Json.obj())
 
         }
         case "pickCardFromClosedDeck" => {
           //update the game state
           pickedFromOpenedDeck = false
+          gameStarted = true
+          Game.pickCardFromClosedDeck()
 
-          actorSystem.actorSelection("/user/*/flowActor").tell(new InEvent("notifyChange"), self)
+          actorSystem.actorSelection("/user/*/flowActor").tell(InEvent("notifyChange", Json.obj()), self)
           out ! new OutEvent("pickCardFromClosedDeck", Json.obj())
         }
-        case "notyfyChange" => {
+        case "notifyChange" => {
           out ! new OutEvent("notifyChange", Json.obj())
         }
       }
