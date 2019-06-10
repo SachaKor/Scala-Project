@@ -15,6 +15,9 @@ object GameServiceActor {
 
 class GameServiceActor(out: ActorRef, user: User, actorSystem: ActorSystem) extends Actor {
 
+  var userDropsACard = false
+  var cardToShowOnTop: Card = _
+
   override def receive: Receive = {
     case msg: InEvent => {
       msg.eventType match {
@@ -49,9 +52,6 @@ class GameServiceActor(out: ActorRef, user: User, actorSystem: ActorSystem) exte
           val name  = (msg.eventContent \ "name").validate[String].get
           val index = (msg.eventContent \ "index").validate[String].get
 
-          Logger.debug(user.username)
-          Logger.debug(Game.curPlayer().name)
-
           // update the game state
           if(user.username == Game.curPlayer().name) {
             Logger.debug("CURRENT PLAYER ACTION")
@@ -68,6 +68,19 @@ class GameServiceActor(out: ActorRef, user: User, actorSystem: ActorSystem) exte
             } else if(name == Game.curPlayer().name) {
               if(Game.cardIsPicked())
                 Game.replaceCard(index.toInt)
+            }
+          }
+
+          // the user wants to drop a card to the opened deck while it's not his turn
+          if(name == user.username && index != "nope") {
+            val p = Game.getPlayerByUsername(name)
+            val cardToDrop = p.seeCard(index.toInt)
+            userDropsACard = true
+            cardToShowOnTop = cardToDrop
+            if(cardToDrop.rank == Game.topOfOpenedDeck().rank) {
+              p.dropCard(index.toInt)
+            } else {
+              p.putCard(Deck52.deck.pickCard())
             }
           }
 
@@ -121,6 +134,10 @@ class GameServiceActor(out: ActorRef, user: User, actorSystem: ActorSystem) exte
   def getState(me: Player, myCards: List[Int], others: Map[Player, List[Int]]): JsValue = Json.obj(
     "me" -> me.toJson(myCards),
     "hand" -> {
+      if(userDropsACard && cardToShowOnTop != null) {
+        userDropsACard = false
+        cardToShowOnTop.toJson
+      }
       if (Game.getHand() == null)
         new Card(Rank.empty, Suit.empty, -1).toJson
       else if (Game.getPlayerByUsername(me.name) == Game.getPlayerByUsername(Game.curPlayer().name))

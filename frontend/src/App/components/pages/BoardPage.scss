@@ -18,6 +18,18 @@
     font-width: 600;
   }
 
+  .player {
+    position: absolute;
+    top: 90px;
+    right: 20px;
+    display: block;
+    background-color: white;
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-size: 20px;
+    font-width: 600;
+  }
+
   .hand {
     position: absolute;
     top: 150px;
@@ -29,21 +41,11 @@
   }
 
   .container-row {
-    position: relative;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     align-items: center;
     width: 100%;
-
-    .name {
-      display: block;
-      background-color: white;
-      border-radius: 8px;
-      padding: 10px 20px;
-      font-size: 20px;
-      font-width: 600;
-    }
 
     &.top-row {
       height: 25%;
