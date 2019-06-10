@@ -43,10 +43,4 @@ class Deck extends Component {
   }
 }
 
-const DeckWithSocket = props => (
-  <SocketContext.Consumer>
-    {socket => <Deck {...props} socket={socket} />}
-  </SocketContext.Consumer>
-)
-
-export default DeckWithSocket
+export default Deck

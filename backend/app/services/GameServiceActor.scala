@@ -88,7 +88,7 @@ class GameServiceActor(out: ActorRef, user: User, actorSystem: ActorSystem) exte
     "me" -> me.toJson(myCards),
     "hand" -> {
       if (Game.getHand() == null)
-        new Card(Rank.closed, Suit.closed, -1).toJson
+        new Card(Rank.empty, Suit.empty, -1).toJson
       else if (Game.getPlayerByUsername(me.name) == Game.getPlayerByUsername(Game.curPlayer().name))
         Game.getHand().toJson
       else new Card(Rank.closed, Suit.closed, -1).toJson
@@ -96,7 +96,7 @@ class GameServiceActor(out: ActorRef, user: User, actorSystem: ActorSystem) exte
     "others" -> Json.toJson(
       for( (k, v) <- others ) yield k.toJson(v)
     ),
-    "openedDeck" -> { if (Game.topOfOpenedDeck() == null) new Card(Rank.closed, Suit.closed, -1).toJson else Game.topOfOpenedDeck().toJson },
+    "openedDeck" -> { if (Game.topOfOpenedDeck() == null) new Card(Rank.empty, Suit.empty, -1).toJson else Game.topOfOpenedDeck().toJson },
     "curPlayer" -> Game.curPlayer().toJson(List()) // do not show the current player's cards
   )
 }

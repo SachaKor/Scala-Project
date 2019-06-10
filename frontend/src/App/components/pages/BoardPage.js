@@ -16,7 +16,7 @@ const INIT_PLAYER = {
 }
 
 const INITIAL_STATE = {
-  socker: null,
+  socket: null,
   curPlayer: INIT_PLAYER,
   me: INIT_PLAYER,
   others: [
@@ -25,7 +25,8 @@ const INITIAL_STATE = {
     INIT_PLAYER,
     INIT_PLAYER
   ],
-  openedDeck: null,
+  openedDeck: {rank: "empty", suit: "empty"},
+  hand: {rank: "empty", suit: "empty"},
 }
 
 class BoardPage extends Component {
@@ -46,7 +47,7 @@ class BoardPage extends Component {
     socket.onmessage = this.handleMessages
 
     this.setState({
-      socket
+      socket: socket
     })
 
     socket.onopen = () => {
@@ -67,6 +68,18 @@ class BoardPage extends Component {
     }
   }
 
+  setCurrentState = (content) => {
+    const { curPlayer, me, others, openedDeck, closedDeck, hand } = content
+    this.setState({
+      curPlayer,
+      me,
+      others,
+      openedDeck,
+      closedDeck,
+      hand
+    })
+  }
+
   handleMessages = (e) => {
     console.log('Received message from server.')
     const message = JSON.parse(e.data)
@@ -74,25 +87,33 @@ class BoardPage extends Component {
     switch(message.eventType) {
       case 'getCards':
         console.log(message.eventContent)
-        this.setState({
-          curPlayer: message.eventContent.curPlayer,
-          me: message.eventContent.me,
-          others: message.eventContent.others,
-          openedDeck: message.eventContent.openedDeck,
-          closedDeck: message.eventContent.closedDeck,
-        })
-        break;
+        this.setCurrentState(message.eventContent)
+        break
+      case 'pickCardFromOpenedDeck':
+        console.log(message.eventContent)
+        this.setCurrentState(message.eventContent)
+        break
+      case 'pickCardFromClosedDeck':
+        console.log(message.eventContent)
+        this.setCurrentState(message.eventContent)
+        break
       default:
         console.log("Unknown")
     }
   }
 
   render() {
-    const { socket } = this.state
+    const { socket, openedDeck, closedDeck, hand, curPlayer, me, others } = this.state
     return (
       <div className="card-decks-container">
         <div className="turn">
-          Turn: {this.state.curPlayer.name}
+          Turn: {curPlayer.name}
+        </div>
+        <div className="hand">
+          <img src={require(`../deck/PNG/${hand.rank}${hand.suit}.png`)} alt="" onClick={this.handleOpenedClick} />
+        </div>
+        <div className="turn">
+          Turn: {curPlayer.name}
         </div>
         <div className="container-row top-row">
           <Deck rotate={1} cards={INIT_PLAYER.cards} socket={socket} />
@@ -100,12 +121,13 @@ class BoardPage extends Component {
         <div className="container-row middle-row">
           <Deck rotate={2} cards={INIT_PLAYER.cards} socket={socket} />
           <CommonDeck
-            openedDeck={this.state.openedDeck}
+            openedDeck={openedDeck}
+            socket={socket}
           />
           <Deck rotate={3} cards={INIT_PLAYER.cards} socket={socket} />
         </div>
         <div className="container-row bottom-row">
-          <Deck rotate={-1} cards={this.state.me.cards} socket={socket} />
+          <Deck rotate={-1} cards={me.cards} socket={socket} />
         </div>
       </div>
     )

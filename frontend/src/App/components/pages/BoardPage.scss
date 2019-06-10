@@ -18,6 +18,16 @@
     font-width: 600;
   }
 
+  .hand {
+    position: absolute;
+    top: 150px;
+    left: 20px;
+
+    img {
+      width: 150px;
+    }
+  }
+
   .container-row {
     display: flex;
     flex-wrap: wrap;
