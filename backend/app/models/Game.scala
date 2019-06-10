@@ -2,10 +2,6 @@ package models
 
 import java.util.Random
 
-import play.api.libs.json.{JsArray, JsObject, JsString, JsValue, Json}
-
-import play.api.Logger
-
 /**
   * - Initiate the game
   * - Add players to the game
@@ -119,21 +115,14 @@ object Game {
   def cardIsPicked(): Boolean = matches.head.curRound.curTurn.cardPicked
   def cardIsDropped(): Boolean = matches.head.curRound.curTurn.cardDropped
   def cardPickedFromOpenedDeck(): Boolean = matches.head.curRound.curTurn.pickedFromOpenedDeck
+  def turnFinished(): Boolean = matches.head.curRound.curTurn.turnFinished()
+  def roundFinished(): Boolean = matches.head.curRound.roundFinished()
 
 
 
   /* **************** Methods controlling the game flow ************************ */
   def nextTurn() = matches.head.curRound.nextTurn()
   def nextRound(first: Player) = matches.head.nextRound(first)
-
-  /* **************** Methods returning the game state ************************ */
-  def getState(p: Player): JsValue = {
-    Logger.info(Json.arr(Json.toJson(p.cards.map(c => c.toJson))).toString())
-    Json.obj(
-      "name" -> p.name
-//      "cards" -> Json.arr(p.cards.map(c => c.toJson).toArray)
-    )
-  }
 
   class Match(first: Player) {
 
@@ -154,7 +143,6 @@ object Game {
     var matchScores: Map[Player, Int] = players.map(p => (p, 0)).toMap
     var openedDeck = new Deck(List())
     var curRound = new Round(first)
-    def curPlayer(): Player = curRound.getCurPlayer()
 
     /**
       * Starts a new Round
@@ -178,6 +166,11 @@ object Game {
     class Round(first: Player) {
       private var curPlayer = first
       var curTurn = new Turn(first)
+
+      /**
+        * @return true if the Round is over
+        */
+      def roundFinished(): Boolean = nextPlayer(players, curPlayer) == this.first || lastRoundIsDeclared()
 
       def getCurPlayer(): Player = curPlayer
 
@@ -317,8 +310,14 @@ object Game {
 
         /**
           * The player who plays the turn declares the last round
+          * The player can only declare the last round after he finishes his turn
           */
-        def declareLastRound() = lastRoundDeclared = true
+        def declareLastRound() = if (turnFinished()) lastRoundDeclared = true
+
+        /**
+          * @return true if the current player has finished his turn
+          */
+        def turnFinished(): Boolean = cardPicked && cardDropped
       }
 
     }
