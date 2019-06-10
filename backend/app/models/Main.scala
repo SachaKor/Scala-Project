@@ -19,8 +19,8 @@ object Main extends App {
     )
     Game.addPlayers(players)
     Game.newMatch()
-    val s = Game.getState(players.apply(3))
-    println(s.toString())
+    //val s = Game.getState(players.apply(3))
+    //println(s.toString())
   }
 
   def testGame() = {
