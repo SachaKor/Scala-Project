@@ -49,6 +49,9 @@ class GameServiceActor(out: ActorRef, user: User, actorSystem: ActorSystem) exte
           val name  = (msg.eventContent \ "name").validate[String].get
           val index = (msg.eventContent \ "index").validate[String].get
 
+          Logger.debug(user.username)
+          Logger.debug(Game.curPlayer().name)
+
           // update the game state
           if(user.username == Game.curPlayer().name) {
             Logger.debug("CURRENT PLAYER ACTION")
@@ -67,11 +70,16 @@ class GameServiceActor(out: ActorRef, user: User, actorSystem: ActorSystem) exte
                 Game.replaceCard(index.toInt)
             }
           }
+
+          
+
           /* ******* game flow control ****** */
-          if(Game.roundFinished())
-            Game.nextRound()
-          if(Game.turnFinished())
+          //if(Game.roundFinished()) // TODO Fix
+            //Game.nextRound()
+          if(Game.turnFinished()) {
+            Logger.debug("TURN FINISHED")
             Game.nextTurn()
+          }
 
           actorSystem.actorSelection("/user/*/flowActor").tell(InEvent("notifyChange", Json.obj()), self)
           out ! new OutEvent("cardClick", Json.obj())

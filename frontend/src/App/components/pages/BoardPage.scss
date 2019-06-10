@@ -28,6 +28,15 @@
     }
   }
 
+  .name {
+    display: block;
+    background-color: white;
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-size: 20px;
+    font-width: 600;
+  }
+
   .container-row {
     display: flex;
     flex-wrap: wrap;

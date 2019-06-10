@@ -24,7 +24,7 @@ class Deck extends Component {
     this.props.socket.send(JSON.stringify({
       eventType: "cardClick",
       eventContent: {
-        index: i,
+        index: i.toString(10),
         name: this.props.name,
         deck: "nope"
       }
