@@ -14,11 +14,11 @@ class CommonDeck extends Component {
   }
 
   handleClosedClick = () => {
-    this.props.socket.send(JSON.stringify({eventType: "pickCardFromOpenedDeck"}))
+    this.props.socket.send(JSON.stringify({eventType: "pickCardFromClosedDeck"}))
   }
 
   handleOpenedClick = () => {
-    this.props.socket.send(JSON.stringify({eventType: "pickCardFromClosedDeck"}))
+    this.props.socket.send(JSON.stringify({eventType: "pickCardFromOpenedDeck"}))
   }
 
   render() {
