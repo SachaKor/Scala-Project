@@ -52,8 +52,9 @@ class GameServiceActor(out: ActorRef, user: User, actorSystem: ActorSystem) exte
           
           // send the response: only the current player can see the card in his hand, all other cards are closed
           val me: Player = Game.getPlayerByUsername(user.username)
-          out ! new OutEvent("pickCardFromOpenedDeck", getState(me, List(),
-            Game.players.filter(p => p != me).map(p => p -> List()).toMap))
+          actorSystem.actorSelection("/user/*/flowActor").tell(new InEvent("notifyChange"), self)
+          out ! new OutEvent("pickCardFromOpenedDeck", Json.obj())
+
         }
         case "pickCardFromClosedDeck" => {
           //update the game state
@@ -62,11 +63,11 @@ class GameServiceActor(out: ActorRef, user: User, actorSystem: ActorSystem) exte
 
           // send the response: only the current player can see the card in his hand, all other cards are closed
           val me: Player = Game.getPlayerByUsername(user.username)
-          out ! new OutEvent("pickCardFromClosedDeck", getState(me, List(),
-            Game.players.filter(p => p != me).map(p => p -> List()).toMap))
+          actorSystem.actorSelection("/user/*/flowActor").tell(new InEvent("notifyChange"), self)
+          out ! new OutEvent("pickCardFromClosedDeck", Json.obj())
         }
-        case "leave" => {
-          self ! PoisonPill
+        case "notyfyChange" => {
+          out ! new OutEvent("notifyChange", Json.obj())
         }
       }
     }

@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import SocketContext from '../../utils/SocketContext'
 import Deck from '../deck/Deck'
 import CommonDeck from '../deck/CommonDeck'
 
@@ -27,6 +26,7 @@ const INITIAL_STATE = {
   ],
   openedDeck: {rank: "empty", suit: "empty"},
   hand: {rank: "empty", suit: "empty"},
+  picked: false
 }
 
 class BoardPage extends Component {
@@ -88,14 +88,20 @@ class BoardPage extends Component {
       case 'getCards':
         console.log(message.eventContent)
         this.setCurrentState(message.eventContent)
+        const picked = message.eventContent.hand.suit !== "empty" && message.eventContent.hand.suit !== "closed"
+        this.setState({
+          picked
+        })
         break
       case 'pickCardFromOpenedDeck':
         console.log(message.eventContent)
-        this.setCurrentState(message.eventContent)
         break
       case 'pickCardFromClosedDeck':
         console.log(message.eventContent)
-        this.setCurrentState(message.eventContent)
+        break
+      case 'notifyChange':
+        console.log(message.eventContent)
+        this.state.socket.send(JSON.stringify({eventType: "getCards"}))
         break
       default:
         console.log("Unknown")
@@ -103,7 +109,7 @@ class BoardPage extends Component {
   }
 
   render() {
-    const { socket, openedDeck, closedDeck, hand, curPlayer, me, others } = this.state
+    const { socket, openedDeck, closedDeck, hand, curPlayer, me, others, picked } = this.state
     return (
       <div className="card-decks-container">
         <div className="turn">
@@ -127,7 +133,7 @@ class BoardPage extends Component {
           <Deck rotate={3} cards={INIT_PLAYER.cards} socket={socket} />
         </div>
         <div className="container-row bottom-row">
-          <Deck rotate={-1} cards={me.cards} socket={socket} />
+          <Deck rotate={-1} cards={me.cards} socket={socket} picked={picked} />
         </div>
       </div>
     )

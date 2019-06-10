@@ -33,8 +33,8 @@ class Deck extends Component {
 
     return (
       <div className={"deck" + className} ref={(div) => this.container = div} style={{width: width}}>
-        { cards.map((c) =>
-          <div className="img-container">
+        { cards.map((c, i) =>
+          <div className="img-container" key={`${i}${c.rank}${c.suit}`}>
             <img src={require(`./PNG/${c.rank}${c.suit}.png`)} alt="product" />
           </div>
         )}
