@@ -35,7 +35,7 @@ class Deck extends Component {
       <div className={"deck" + className} ref={(div) => this.container = div} style={{width: width}}>
         { cards.map((c) =>
           <div className="img-container">
-            <img src={card} alt="" />
+            <img src={require(`./PNG/${c.rank}${c.suit}.png`)} alt="product" />
           </div>
         )}
       </div>
@@ -43,10 +43,4 @@ class Deck extends Component {
   }
 }
 
-const DeckWithSocket = props => (
-  <SocketContext.Consumer>
-    {socket => <Deck {...props} socket={socket} />}
-  </SocketContext.Consumer>
-)
-
-export default DeckWithSocket
+export default Deck

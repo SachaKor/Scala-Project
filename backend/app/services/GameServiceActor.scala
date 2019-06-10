@@ -39,13 +39,9 @@ class GameServiceActor(out: ActorRef, user: User, actorSystem: ActorSystem) exte
         case "getCards" => {
           Logger.info("In getCards")
           val me: Player = Game.getPlayerByUsername(user.username)
-          Logger.debug(me.toString)
           val myCards: List[Int] = List(0, 1) // the player can see his first two cards
-          Logger.debug(myCards.toString)
           // the player cannot see others' cards
           val others: Map[Player, List[Int]] = Game.players.filter(p => p != me).map(p => p -> List()).toMap
-          Logger.debug(others.toString)
-          Logger.debug(getState(me, myCards, others).toString())
 
           out ! new OutEvent("getCards", getState(me, myCards, others))
         }
@@ -92,7 +88,7 @@ class GameServiceActor(out: ActorRef, user: User, actorSystem: ActorSystem) exte
     "me" -> me.toJson(myCards),
     "hand" -> {
       if (Game.getHand() == null)
-        new Card(Rank.closed, Suit.closed, -1).toJson
+        new Card(Rank.empty, Suit.empty, -1).toJson
       else if (Game.getPlayerByUsername(me.name) == Game.getPlayerByUsername(Game.curPlayer().name))
         Game.getHand().toJson
       else new Card(Rank.closed, Suit.closed, -1).toJson
@@ -100,7 +96,7 @@ class GameServiceActor(out: ActorRef, user: User, actorSystem: ActorSystem) exte
     "others" -> Json.toJson(
       for( (k, v) <- others ) yield k.toJson(v)
     ),
-    "openedDeck" -> { if (Game.topOfOpenedDeck() == null) new Card(Rank.closed, Suit.closed, -1).toJson else Game.topOfOpenedDeck().toJson },
+    "openedDeck" -> { if (Game.topOfOpenedDeck() == null) new Card(Rank.empty, Suit.empty, -1).toJson else Game.topOfOpenedDeck().toJson },
     "curPlayer" -> Game.curPlayer().toJson(List()) // do not show the current player's cards
   )
 }
