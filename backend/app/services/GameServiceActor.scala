@@ -15,10 +15,7 @@ object GameServiceActor {
 
 class GameServiceActor(out: ActorRef, user: User, actorSystem: ActorSystem) extends Actor {
 
-  /* ******************** controller flags ************************** */
-  var pickedFromOpenedDeck: Boolean = false // current player picked a card from the opened deck
-  var gameStarted = false // when true -> hide the cards
-  var cardDropped = false
+  var gameStarted = false
 
   override def receive: Receive = {
     case msg: InEvent => {
@@ -51,8 +48,6 @@ class GameServiceActor(out: ActorRef, user: User, actorSystem: ActorSystem) exte
         case "pickCardFromOpenedDeck" => {
           // update the game state
           Game.pickCardFromOpenedDeck()
-          pickedFromOpenedDeck = true
-          cardDropped = false
           gameStarted = true
 
           // send the response: only the current player can see the card in his hand, all other cards are closed
@@ -64,8 +59,6 @@ class GameServiceActor(out: ActorRef, user: User, actorSystem: ActorSystem) exte
         case "pickCardFromClosedDeck" => {
           //update the game state
           Game.pickCardFromClosedDeck()
-          pickedFromOpenedDeck = false
-          cardDropped = false
           gameStarted = true
 
           // send the response: only the current player can see the card in his hand, all other cards are closed
@@ -76,8 +69,6 @@ class GameServiceActor(out: ActorRef, user: User, actorSystem: ActorSystem) exte
         case "dropCardToOpenedDeck" => {
           // update the game state
           Game.dropCardToOpenedDeck()
-          pickedFromOpenedDeck = false
-          cardDropped = true
 
           // the hand should be empty now
           val me: Player = Game.getPlayerByUsername(user.username)
@@ -85,9 +76,11 @@ class GameServiceActor(out: ActorRef, user: User, actorSystem: ActorSystem) exte
           out ! new OutEvent("dropCardToOpenedDeck", Json.obj())
         }
         case "replaceCard" => {
-          if(!cardDropped) {
-
-          }
+          // TODO: replace the index of the card to replace with one passed in the request
+          Game.replaceCard(0)
+          val me: Player = Game.getPlayerByUsername(user.username)
+          actorSystem.actorSelection("/user/*/flowActor").tell(new InEvent("notifyChange"), self)
+          out ! new OutEvent("replaceCard", Json.obj())
         }
         case "notyfyChange" => {
           out ! new OutEvent("notifyChange", Json.obj())
