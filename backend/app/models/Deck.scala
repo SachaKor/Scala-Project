@@ -44,7 +44,7 @@ class Deck(c: List[Card]) {
   def pickCards(n: Int): List[Card] = {
     if (size() < n) throw new Error("Trying to pick " + n.toString + " cards from the deck containing " + size() + " cards")
     for {
-      i <- (0 to n).toList
+      i <- (0 until n).toList
     } yield pickCard()
   }
 

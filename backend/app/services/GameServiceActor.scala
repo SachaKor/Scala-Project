@@ -15,6 +15,9 @@ object GameServiceActor {
 
 class GameServiceActor(out: ActorRef, user: User, actorSystem: ActorSystem) extends Actor {
 
+  /* ******************** controller flags ************************** */
+  var pickedFromOpenedDeck: Boolean = false // current player picked a card from the opened deck
+
   override def receive: Receive = {
     case msg: InEvent => {
       msg.eventType match {
@@ -46,6 +49,14 @@ class GameServiceActor(out: ActorRef, user: User, actorSystem: ActorSystem) exte
 
           out ! new OutEvent("getCards", getState(me, myCards, others))
         }
+        case "pickCardFromOpenedDeck" => {
+          val card: Card = Game.pickCardFromClosedDeck()
+          pickedFromOpenedDeck = true
+        }
+        case "pickCardFromClosedDeck" => {
+          val card: Card = Game.pickCardFromClosedDeck()
+          pickedFromOpenedDeck = false
+        }
         case "leave" => {
           self ! PoisonPill
         }
@@ -67,6 +78,11 @@ class GameServiceActor(out: ActorRef, user: User, actorSystem: ActorSystem) exte
 
   def getState(me: Player, myCards: List[Int], others: Map[Player, List[Int]]): JsValue = Json.obj(
     "me" -> me.toJson(myCards),
+    "hand" -> {
+      if (Game.getPlayerByUsername(me.name) == Game.getPlayerByUsername(Game.curPlayer().name))
+        Game.getHand().toJson
+      else new Card(Rank.closed, Suit.closed, -1).toJson
+    },
     "others" -> Json.toJson(
       for( (k, v) <- others ) yield k.toJson(v)
     ),
