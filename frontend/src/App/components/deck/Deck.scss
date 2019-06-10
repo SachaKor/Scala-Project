@@ -2,11 +2,38 @@
 
 .deck {
   height: 100%;
+  width: auto;
   background-color: $dark;
   border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-start;
+
+  .img-container {
+    height: 50%;
+    width: auto;
+
+    &.common {
+      height: 100%;
+    }
+
+    img {
+      height: calc(100% - 10px);
+      width: auto;
+      border: solid 5px transparent;
+      border-radius: 8px;
+
+      &:hover {
+        border: solid 5px red;
+      }
+    }
+  }
 
   &.common {
     height: 50%;
+    flex-direction: row;
   }
 
   &.top-deck {
@@ -21,29 +48,5 @@
   &.right-deck {
     transform: rotate(-90deg);
     margin-left: 200px;
-  }
-
-  .cards {
-    height: 100%;
-
-    .cards-row {
-      display: flex;
-      align-items: center;
-      height: 50%;
-
-      &.common {
-        height: 100%;
-      }
-
-      img {
-        &:hover {
-          border: solid 5px red;
-        }
-
-        height: calc(100% - 10px);
-        border: solid 5px transparent;
-        border-radius: 8px;
-      }
-    }
   }
 }

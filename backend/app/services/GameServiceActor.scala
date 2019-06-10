@@ -25,7 +25,7 @@ class GameServiceActor(out: ActorRef, user: User, actorSystem: ActorSystem) exte
           Logger.debug("JOIN EVENT")
           Game.addPlayer(new Player(user.username, List()))
           actorSystem.actorSelection("/user/*/flowActor").tell(new InEvent("nbPlayers"), self)
-          if(Game.players.length == 4) {
+          if(Game.players.length == 2) {
             Game.newMatch() // init the first match
             actorSystem.actorSelection("/user/*/flowActor").tell(new InEvent("startGame"), self)
           }
@@ -37,10 +37,16 @@ class GameServiceActor(out: ActorRef, user: User, actorSystem: ActorSystem) exte
           out ! new OutEvent("startGame", Json.obj())
         }
         case "getCards" => {
+          Logger.info("In getCards")
           val me: Player = Game.getPlayerByUsername(user.username)
+          Logger.debug(me.toString)
           val myCards: List[Int] = List(0, 1) // the player can see his first two cards
+          Logger.debug(myCards.toString)
           // the player cannot see others' cards
           val others: Map[Player, List[Int]] = Game.players.filter(p => p != me).map(p => p -> List()).toMap
+          Logger.debug(others.toString)
+          Logger.debug(getState(me, myCards, others).toString())
+
           out ! new OutEvent("getCards", getState(me, myCards, others))
         }
         case "pickCardFromOpenedDeck" => {

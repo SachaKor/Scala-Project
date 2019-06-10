@@ -17,17 +17,17 @@ class CommonDeck extends Component {
   }
 
   handleClick = () => {
-    this.props.socket.send({type: "join"})
+    this.props.socket.send(JSON.stringify({type: "join"}))
   }
 
   render() {
     return (
-      <div className={"deck common"}>
-        <div className="cards">
-          <div className="cards-row common">
-            <img src={card} alt="" onClick={this.handleClick} />
-            <img src={card2} alt="" onClick={this.handleClick} />
-          </div>
+      <div className="deck common">
+        <div className="img-container common">
+          <img src={card} alt="" onClick={this.handleClick} />
+        </div>
+        <div className="img-container common">
+          <img src={card2} alt="" onClick={this.handleClick} />
         </div>
       </div>
     )

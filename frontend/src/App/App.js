@@ -12,7 +12,6 @@ import { PATHS } from './routes'
 import './App.scss'
 
 const INITIAL_STATE = {
-  socket: null
 }
 
 class App extends Component {
@@ -20,12 +19,6 @@ class App extends Component {
   constructor(props) {
     super(props)
     this.state = INITIAL_STATE
-  }
-
-  setSocket = (socket) => {
-    this.setState({
-      socket
-    })
   }
 
   render() {
@@ -37,10 +30,8 @@ class App extends Component {
             <Route path={PATHS.HOME} exact component={LoginPage} />
             <Route path={PATHS.LOGIN} exact component={LoginPage} />
             <Route path={PATHS.SIGNUP} exact component={SignupPage} />
-            <SocketContext.Provider value={this.state.socket}>
-              <PrivateRoute path={PATHS.LOBBY} component={LobbyPage} setSocket={this.setSocket} />
-              <PrivateRoute path={PATHS.BOARD} component={BoardPage} />
-            </SocketContext.Provider>
+            <PrivateRoute path={PATHS.LOBBY} component={LobbyPage} />
+            <PrivateRoute path={PATHS.BOARD} component={BoardPage} />
           </Switch>
         </div>
       </Fragment>

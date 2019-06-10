@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import SocketContext from '../../utils/SocketContext'
-import { history } from '../../../helpers'
+import { withRouter } from 'react-router'
 
 import './LobbyPage.scss'
 
@@ -20,42 +20,20 @@ class LobbyPage extends Component {
     this.connectSocket()
   }
 
-  handleMessages = (e) => {
-    console.log('Received message from server.')
-    const message = JSON.parse(e.data)
-    console.log(message)
-    switch(message.eventType) {
-      case 'nbPlayers':
-        this.setState({
-          nbPlayers: message.eventContent.nbPlayers,
-          joined: true
-        })
-        break;
-        case 'startGame':
-          history.push('/board')
-          break;
-      default:
-        console.log("Not known")
-    }
-  }
-
   connectSocket = () => {
     const user = JSON.parse(localStorage.getItem('user'))
-    const { setSocket } = this.props
-
     const URL = 'ws://localhost:9000/ws?token=' + user.token
 
     const socket = new WebSocket(URL)
+    socket.onmessage = this.handleMessages
 
     this.setState({
       socket
-    }, () => setSocket(this.state.socket))
+    })
 
     socket.onopen = () => {
       console.log('connected')
     }
-
-    socket.onmessage = this.handleMessages
 
     socket.onclose = (e) => {
       console.log('Socket is closed. Reconnect will be attempted in 1 second.', e.reason);
@@ -70,7 +48,27 @@ class LobbyPage extends Component {
     }
   }
 
+  handleMessages = (e) => {
+    console.log('Received message from server.')
+    const message = JSON.parse(e.data)
+    console.log(message)
+    switch(message.eventType) {
+      case 'nbPlayers':
+        this.setState({
+          nbPlayers: message.eventContent.nbPlayers,
+          joined: true
+        })
+        break;
+        case 'startGame':
+          this.props.history.push('/board')
+          break;
+      default:
+        console.log("Unknown")
+    }
+  }
+
   handleJoin = () => {
+    console.log('join')
     this.state.socket.send(JSON.stringify({eventType: "join"}))
   }
 
@@ -93,10 +91,4 @@ class LobbyPage extends Component {
   }
 }
 
-const LobbyPageWithSocket = props => (
-  <SocketContext.Consumer>
-    {socket => <LobbyPage {...props} socket={socket} />}
-  </SocketContext.Consumer>
-)
-
-export default LobbyPageWithSocket
+export default withRouter(LobbyPage)
