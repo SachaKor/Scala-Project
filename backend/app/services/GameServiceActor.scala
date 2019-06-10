@@ -15,8 +15,6 @@ object GameServiceActor {
 
 class GameServiceActor(out: ActorRef, user: User, actorSystem: ActorSystem) extends Actor {
 
-  var gameStarted = false
-
   override def receive: Receive = {
     case msg: InEvent => {
       msg.eventType match {
@@ -39,7 +37,7 @@ class GameServiceActor(out: ActorRef, user: User, actorSystem: ActorSystem) exte
           Logger.info("IN GET CARDS")
           val me: Player = Game.getPlayerByUsername(user.username)
           // the player can see his first two cards only in the beginning of the game
-          val myCards: List[Int] = if(!gameStarted) List(0, 1) else List()
+          val myCards: List[Int] = if(!Game.hideCards()) List(0, 1) else List()
           // the player cannot see others' cards
           val others: Map[Player, List[Int]] = Game.players.filter(p => p != me).map(p => p -> List()).toMap
 
@@ -58,16 +56,19 @@ class GameServiceActor(out: ActorRef, user: User, actorSystem: ActorSystem) exte
               Logger.debug("CLOSED DECK CLICK")
               if(!Game.cardIsPicked())
                 Game.pickCardFromClosedDeck()
-              gameStarted = true
             } else if(deck == "opened") {
               Logger.debug("OPENED DECK CLICK")
               if(Game.cardIsPicked())
                 Game.dropCardToOpenedDeck()
               else
                 Game.pickCardFromOpenedDeck()
-              gameStarted = true
             }
           }
+          /* ******* game flow control ****** */
+          if(Game.roundFinished())
+            Game.nextRound()
+          if(Game.turnFinished())
+            Game.nextTurn()
 
           actorSystem.actorSelection("/user/*/flowActor").tell(InEvent("notifyChange", Json.obj()), self)
           out ! new OutEvent("cardClick", Json.obj())

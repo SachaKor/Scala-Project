@@ -13,6 +13,7 @@ object Game {
   var players: List[Player] = List()
   var matches: List[Match] = List()
   var gameScores: Map[Player, Int] = players.map(p => (p, 0)).toMap
+  private var gameStarted = false
   // the player who starts the match
   private var firstPlayer: Player = _
 
@@ -118,7 +119,7 @@ object Game {
   def turnFinished(): Boolean = matches.head.curRound.curTurn.turnFinished()
   def roundFinished(): Boolean = matches.head.curRound.roundFinished()
 
-
+  def hideCards(): Boolean = gameStarted
 
   /* **************** Methods controlling the game flow ************************ */
   def nextTurn() = matches.head.curRound.nextTurn()
@@ -222,6 +223,7 @@ object Game {
           else if (hand == null) {
             hand = deck.pickCard()
             cardPicked = true
+            gameStarted = true // the game starts when the first player picks a card
             hand
           }
           else throw new Error("The player " + player.name + " holds a card already")
