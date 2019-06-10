@@ -36,7 +36,7 @@ class GameServiceActor(out: ActorRef, user: User, actorSystem: ActorSystem) exte
           out ! new OutEvent("startGame", Json.obj())
         }
         case "getCards" => {
-          Logger.info("In getCards")
+          Logger.info("IN GET CARDS")
           val me: Player = Game.getPlayerByUsername(user.username)
           // the player can see his first two cards only in the beginning of the game
           val myCards: List[Int] = if(!gameStarted) List(0, 1) else List()
@@ -47,7 +47,6 @@ class GameServiceActor(out: ActorRef, user: User, actorSystem: ActorSystem) exte
         }
         case "cardClick" => {
           Logger.debug("IN CARD CLICK")
-
           val deck  = (msg.eventContent \ "deck").validate[String].get
           val name  = (msg.eventContent \ "name").validate[String].get
           val index = (msg.eventContent \ "index").validate[String].get
@@ -57,7 +56,7 @@ class GameServiceActor(out: ActorRef, user: User, actorSystem: ActorSystem) exte
             Logger.debug("CURRENT PLAYER ACTION")
             if(deck == "closed") {
               Logger.debug("CLOSED DECK CLICK")
-              Game.pickCardFromOpenedDeck()
+              Game.pickCardFromClosedDeck()
               gameStarted = true
             } else if(deck == "opened") {
               Logger.debug("OPENED DECK CLICK")
