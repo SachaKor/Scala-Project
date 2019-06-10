@@ -10,5 +10,6 @@ object Suit extends Enumeration {
   val diamonds = Value("diamonds") // "\u2666"
   val clubs    = Value("clubs")    // "\u2663"
   val closed   = Value("closed")
+  val empty    = Value("empty")
 }
 

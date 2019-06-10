@@ -11,7 +11,7 @@ object Deck52 {
       for {
         rank <- Rank.values.toList
         suit <- Suit.values.toList
-        if rank != Rank.closed && suit != Suit.closed
+        if rank != Rank.closed && suit != Suit.closed && rank != Rank.empty && suit != Suit.empty
       } yield new Card(rank, suit, CardPoints.points(rank, suit))
     )
   }
