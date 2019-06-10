@@ -23,12 +23,20 @@ class GameServiceActor(out: ActorRef, user: User, actorSystem: ActorSystem) exte
           if(Game.players.length == 4) {
             actorSystem.actorSelection("/user/*/flowActor").tell(new InEvent("startGame"), self)
           }
+          Game.newMatch() // init the first game
         }
         case "nbPlayers" => {
           out ! new OutEvent("nbPlayers", playerJoined())
         }
         case "startGame" => {
           out ! new OutEvent("startGame", Json.obj())
+        }
+        case "getCards" => {
+          val me: Player = Game.getPlayerByUsername(user.username)
+          val myCards: List[Int] = List(0, 1) // the player can see his first two cards
+          // the player cannot see others' cards
+          val others: Map[Player, List[Int]] = Game.players.filter(p => p != me).map(p => p -> List()).toMap
+          out ! new OutEvent("getCards", getState(me, myCards, others))
         }
         case "leave" => {
           self ! PoisonPill
