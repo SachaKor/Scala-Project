@@ -51,7 +51,7 @@ class GameServiceActor(out: ActorRef, user: User, actorSystem: ActorSystem) exte
         }
         case "pickCardFromOpenedDeck" => {
           // update the game state
-          Game.pickCardFromClosedDeck()
+          Game.pickCardFromOpenedDeck()
           pickedFromOpenedDeck = true
           
           // send the response: only the current player can see the card in his hand, all other cards are closed
@@ -66,7 +66,7 @@ class GameServiceActor(out: ActorRef, user: User, actorSystem: ActorSystem) exte
 
           // send the response: only the current player can see the card in his hand, all other cards are closed
           val me: Player = Game.getPlayerByUsername(user.username)
-          out ! new OutEvent("pickCardFromOpenedDeck", getState(me, List(),
+          out ! new OutEvent("pickCardFromClosedDeck", getState(me, List(),
             Game.players.filter(p => p != me).map(p => p -> List()).toMap))
         }
         case "leave" => {
