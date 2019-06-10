@@ -19,12 +19,11 @@ class GameServiceActor(out: ActorRef, user: User, actorSystem: ActorSystem) exte
         case "join" => {
           Logger.debug("JOIN EVENT")
           Game.addPlayer(new Player(user.username, List()))
-          Logger.info("Actor name: " + actorSystem.actorSelection("/user/*/flowActor").toString())
           actorSystem.actorSelection("/user/*/flowActor").tell(InEvent("nbPlayers"), self)
-          if(Game.players.length == 4) {
+          if(Game.players.length == 2) {
             actorSystem.actorSelection("/user/*/flowActor").tell(InEvent("startGame"), self)
           }
-          //Game.newMatch() // init the first game
+          Game.newMatch() // init the first game
         }
         case "nbPlayers" => {
           out ! new OutEvent("nbPlayers", playerJoined())
@@ -33,10 +32,14 @@ class GameServiceActor(out: ActorRef, user: User, actorSystem: ActorSystem) exte
           out ! new OutEvent("startGame", Json.obj())
         }
         case "getCards" => {
+          Logger.info("In getCards")
           val me: Player = Game.getPlayerByUsername(user.username)
           val myCards: List[Int] = List(0, 1) // the player can see his first two cards
           // the player cannot see others' cards
           val others: Map[Player, List[Int]] = Game.players.filter(p => p != me).map(p => p -> List()).toMap
+          Logger.debug(getState(me, myCards, others).toString())
+          Logger.debug(others.toString)
+
           out ! new OutEvent("getCards", getState(me, myCards, others))
         }
         case "leave" => {

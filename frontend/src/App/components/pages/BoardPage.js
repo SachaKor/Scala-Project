@@ -6,7 +6,7 @@ import CommonDeck from '../deck/CommonDeck'
 import './BoardPage.scss'
 
 const INITIAL_STATE = {
-
+  socker: null
 }
 
 class BoardPage extends Component {
@@ -16,18 +16,35 @@ class BoardPage extends Component {
   }
 
   componentDidMount() {
-    if(this.props.socket) {
-      console.log('socket')
-      this.props.socket.onmessage = this.handleMessages
-      this.props.socket.send(JSON.stringify({eventType: "getCards"}))
-    }
+    this.connectSocket()
   }
 
-  componentDidUpdate() {
-    if(this.props.socket) {
-      console.log('socket')
-      this.props.socket.onmessage = this.handleMessages
-      this.props.socket.send(JSON.stringify({eventType: "getCards"}))
+  connectSocket = () => {
+    const user = JSON.parse(localStorage.getItem('user'))
+    const URL = 'ws://localhost:9000/ws?token=' + user.token
+
+    const socket = new WebSocket(URL)
+    socket.onmessage = this.handleMessages
+
+    this.setState({
+      socket
+    })
+
+    socket.onopen = () => {
+      console.log('connected')
+      socket.send(JSON.stringify({eventType: "getCards"}))
+    }
+
+    socket.onclose = (e) => {
+      console.log('Socket is closed. Reconnect will be attempted in 1 second.', e.reason);
+      setTimeout(() => {
+        this.connectSocket()
+      }, 1000)
+    }
+
+    socket.onerror = (err) => {
+      console.error('Socket encountered error: ', err.message, 'Closing socket');
+      socket.close()
     }
   }
 
@@ -67,10 +84,4 @@ class BoardPage extends Component {
   }
 }
 
-const BoardPageWithSocket = props => (
-  <SocketContext.Consumer>
-    {socket => <BoardPage {...props} socket={socket} />}
-  </SocketContext.Consumer>
-)
-
-export default BoardPageWithSocket
+export default BoardPage

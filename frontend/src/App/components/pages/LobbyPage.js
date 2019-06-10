@@ -17,12 +17,34 @@ class LobbyPage extends Component {
   }
 
   componentDidMount() {
-    this.props.setSocket()
+    this.connectSocket()
   }
 
-  componentDidUpdate() {
-    if(this.props.socket) {
-      this.props.socket.onmessage = this.handleMessages
+  connectSocket = () => {
+    const user = JSON.parse(localStorage.getItem('user'))
+    const URL = 'ws://localhost:9000/ws?token=' + user.token
+
+    const socket = new WebSocket(URL)
+    socket.onmessage = this.handleMessages
+
+    this.setState({
+      socket
+    })
+
+    socket.onopen = () => {
+      console.log('connected')
+    }
+
+    socket.onclose = (e) => {
+      console.log('Socket is closed. Reconnect will be attempted in 1 second.', e.reason);
+      setTimeout(() => {
+        this.connectSocket()
+      }, 1000)
+    }
+
+    socket.onerror = (err) => {
+      console.error('Socket encountered error: ', err.message, 'Closing socket');
+      socket.close()
     }
   }
 
@@ -47,7 +69,7 @@ class LobbyPage extends Component {
 
   handleJoin = () => {
     console.log('join')
-    this.props.socket.send(JSON.stringify({eventType: "join"}))
+    this.state.socket.send(JSON.stringify({eventType: "join"}))
   }
 
   render() {
@@ -69,10 +91,4 @@ class LobbyPage extends Component {
   }
 }
 
-const LobbyPageWithSocket = props => (
-  <SocketContext.Consumer>
-    {socket => <LobbyPage {...props} socket={socket} />}
-  </SocketContext.Consumer>
-)
-
-export default withRouter(LobbyPageWithSocket)
+export default withRouter(LobbyPage)
