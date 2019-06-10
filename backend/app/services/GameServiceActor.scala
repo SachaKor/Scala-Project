@@ -56,11 +56,15 @@ class GameServiceActor(out: ActorRef, user: User, actorSystem: ActorSystem) exte
             Logger.debug("CURRENT PLAYER ACTION")
             if(deck == "closed") {
               Logger.debug("CLOSED DECK CLICK")
-              Game.pickCardFromClosedDeck()
+              if(!Game.cardIsPicked())
+                Game.pickCardFromClosedDeck()
               gameStarted = true
             } else if(deck == "opened") {
               Logger.debug("OPENED DECK CLICK")
-              Game.pickCardFromOpenedDeck()
+              if(Game.cardIsPicked())
+                Game.dropCardToOpenedDeck()
+              else
+                Game.pickCardFromOpenedDeck()
               gameStarted = true
             }
           }
