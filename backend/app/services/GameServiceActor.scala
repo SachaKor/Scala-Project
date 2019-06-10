@@ -100,7 +100,7 @@ class GameServiceActor(out: ActorRef, user: User, actorSystem: ActorSystem) exte
     "others" -> Json.toJson(
       for( (k, v) <- others ) yield k.toJson(v)
     ),
-    "openedDeck" -> { if (Game.topOfOpenedDeck() == null) JsString("empty") else Game.topOfOpenedDeck().toJson },
+    "openedDeck" -> { if (Game.topOfOpenedDeck() == null) new Card(Rank.closed, Suit.closed, -1).toJson else Game.topOfOpenedDeck().toJson },
     "curPlayer" -> Game.curPlayer().toJson(List()) // do not show the current player's cards
   )
 }
