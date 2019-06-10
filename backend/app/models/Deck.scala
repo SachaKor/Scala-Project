@@ -18,7 +18,7 @@ class Deck(c: List[Card]) {
     * Shows the card on the top of the deck
     * @return he card on the top of the deck
     */
-  def top(): Card = cards.head
+  def top(): Card = if (cards.isEmpty) null else cards.head
 
   /**
     * Put a card on top of the deck

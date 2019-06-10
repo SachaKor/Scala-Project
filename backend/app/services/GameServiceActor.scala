@@ -3,8 +3,10 @@ package services
 import akka.actor.{Actor, ActorRef, ActorSystem, PoisonPill, Props}
 import models._
 import play.api.Logger
-import play.api.libs.json.{JsNumber, JsValue, Json}
+import play.api.libs.json
+import play.api.libs.json.{JsNumber, JsString, JsValue, Json}
 import play.api.mvc.Action
+import play.mvc.BodyParser
 
 object GameServiceActor {
   def props(out: ActorRef, user: User, actorSystem: ActorSystem) = Props(new GameServiceActor(out, user, actorSystem))
@@ -62,7 +64,7 @@ class GameServiceActor(out: ActorRef, user: User, actorSystem: ActorSystem) exte
     "others" -> Json.toJson(
       for( (k, v) <- others ) yield k.toJson(v)
     ),
-    "openedDeck" -> Game.topOfOpenedDeck().toJson,
+    "openedDeck" -> { if (Game.topOfOpenedDeck() == null) JsString("empty") else Game.topOfOpenedDeck().toJson },
     "curPlayer" -> Game.curPlayer().toJson(List()) // do not show the current player's cards
   )
 }
