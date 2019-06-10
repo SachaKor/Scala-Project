@@ -122,7 +122,7 @@ object Game {
 
   /* **************** Methods controlling the game flow ************************ */
   def nextTurn() = matches.head.curRound.nextTurn()
-  def nextRound(first: Player) = matches.head.nextRound(first)
+  def nextRound() = matches.head.nextRound()
 
   class Match(first: Player) {
 
@@ -145,11 +145,18 @@ object Game {
     var curRound = new Round(first)
 
     /**
+      * @return true if the Match is over
+      */
+    def matchFinished(): Boolean = lastRoundIsDeclared() && lastRound && curRound.roundFinished()
+
+    /**
       * Starts a new Round
       * The first player is randomly chosen
       */
-    def nextRound(first: Player) = {
-      curRound = new Round(first)
+    def nextRound() = {
+      if (lastRoundIsDeclared())
+        lastRound = true
+      curRound = new Round(nextPlayer(players, curPlayer()))
     }
 
     /**
