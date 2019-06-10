@@ -15,40 +15,39 @@ class BoardPage extends Component {
     this.state = INITIAL_STATE
   }
 
-  connectSocket = () => {
-    const user = JSON.parse(localStorage.getItem('user'))
-    const { setSocket } = this.props
-
-    const URL = 'ws://localhost:9000/ws?token=' + user.token
-
-    const socket = new WebSocket(URL)
-
-    this.setState({
-      socket
-    }, () => setSocket(this.state.socket))
-
-    socket.onopen = () => {
-      console.log('connected')
+  componentDidMount() {
+    if(this.props.socket) {
+      console.log('socket')
+      this.props.socket.onmessage = this.handleMessages
+      this.props.socket.send(JSON.stringify({eventType: "getCards"}))
     }
+  }
 
-    socket.onmessage = this.handleMessages
-
-    socket.onclose = (e) => {
-      console.log('Socket is closed. Reconnect will be attempted in 1 second.', e.reason);
-      setTimeout(() => {
-        this.connectSocket()
-      }, 1000)
+  componentDidUpdate() {
+    if(this.props.socket) {
+      console.log('socket')
+      this.props.socket.onmessage = this.handleMessages
+      this.props.socket.send(JSON.stringify({eventType: "getCards"}))
     }
+  }
 
-    socket.onerror = (err) => {
-      console.error('Socket encountered error: ', err.message, 'Closing socket');
-      socket.close()
+  handleMessages = (e) => {
+    console.log('Received message from server.')
+    const message = JSON.parse(e.data)
+    console.log(message)
+    switch(message.eventType) {
+      case 'getCards':
+        console.log(message.eventContent)
+        break;
+      default:
+        console.log("Unknown")
     }
   }
 
   render() {
     return (
       <div className="card-decks-container">
+        <div></div>
         <div className="turn">
           Turn: Player 1
         </div>

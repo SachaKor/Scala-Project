@@ -17,7 +17,7 @@ class CommonDeck extends Component {
   }
 
   handleClick = () => {
-    this.props.socket.send({type: "join"})
+    this.props.socket.send(JSON.stringify({type: "join"}))
   }
 
   render() {

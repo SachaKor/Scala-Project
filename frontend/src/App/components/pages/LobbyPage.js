@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import SocketContext from '../../utils/SocketContext'
-import { history } from '../../../helpers'
+import { withRouter } from 'react-router'
 
 import './LobbyPage.scss'
 
@@ -17,7 +17,13 @@ class LobbyPage extends Component {
   }
 
   componentDidMount() {
-    this.connectSocket()
+    this.props.setSocket()
+  }
+
+  componentDidUpdate() {
+    if(this.props.socket) {
+      this.props.socket.onmessage = this.handleMessages
+    }
   }
 
   handleMessages = (e) => {
@@ -32,46 +38,16 @@ class LobbyPage extends Component {
         })
         break;
         case 'startGame':
-          history.push('/board')
+          this.props.history.push('/board')
           break;
       default:
-        console.log("Not known")
-    }
-  }
-
-  connectSocket = () => {
-    const user = JSON.parse(localStorage.getItem('user'))
-    const { setSocket } = this.props
-
-    const URL = 'ws://localhost:9000/ws?token=' + user.token
-
-    const socket = new WebSocket(URL)
-
-    this.setState({
-      socket
-    }, () => setSocket(this.state.socket))
-
-    socket.onopen = () => {
-      console.log('connected')
-    }
-
-    socket.onmessage = this.handleMessages
-
-    socket.onclose = (e) => {
-      console.log('Socket is closed. Reconnect will be attempted in 1 second.', e.reason);
-      setTimeout(() => {
-        this.connectSocket()
-      }, 1000)
-    }
-
-    socket.onerror = (err) => {
-      console.error('Socket encountered error: ', err.message, 'Closing socket');
-      socket.close()
+        console.log("Unknown")
     }
   }
 
   handleJoin = () => {
-    this.state.socket.send(JSON.stringify({eventType: "join"}))
+    console.log('join')
+    this.props.socket.send(JSON.stringify({eventType: "join"}))
   }
 
   render() {
@@ -99,4 +75,4 @@ const LobbyPageWithSocket = props => (
   </SocketContext.Consumer>
 )
 
-export default LobbyPageWithSocket
+export default withRouter(LobbyPageWithSocket)

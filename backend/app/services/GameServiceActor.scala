@@ -19,11 +19,12 @@ class GameServiceActor(out: ActorRef, user: User, actorSystem: ActorSystem) exte
         case "join" => {
           Logger.debug("JOIN EVENT")
           Game.addPlayer(new Player(user.username, List()))
-          actorSystem.actorSelection("/user/*/flowActor").tell(new InEvent("nbPlayers"), self)
+          Logger.info("Actor name: " + actorSystem.actorSelection("/user/*/flowActor").toString())
+          actorSystem.actorSelection("/user/*/flowActor").tell(InEvent("nbPlayers"), self)
           if(Game.players.length == 4) {
-            actorSystem.actorSelection("/user/*/flowActor").tell(new InEvent("startGame"), self)
+            actorSystem.actorSelection("/user/*/flowActor").tell(InEvent("startGame"), self)
           }
-          Game.newMatch() // init the first game
+          //Game.newMatch() // init the first game
         }
         case "nbPlayers" => {
           out ! new OutEvent("nbPlayers", playerJoined())
