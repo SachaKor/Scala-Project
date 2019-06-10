@@ -52,6 +52,7 @@ class GameServiceActor(out: ActorRef, user: User, actorSystem: ActorSystem) exte
           // update the game state
           Game.pickCardFromOpenedDeck()
           pickedFromOpenedDeck = true
+          cardDropped = false
           gameStarted = true
 
           // send the response: only the current player can see the card in his hand, all other cards are closed
@@ -64,6 +65,7 @@ class GameServiceActor(out: ActorRef, user: User, actorSystem: ActorSystem) exte
           //update the game state
           Game.pickCardFromClosedDeck()
           pickedFromOpenedDeck = false
+          cardDropped = false
           gameStarted = true
 
           // send the response: only the current player can see the card in his hand, all other cards are closed
@@ -80,7 +82,12 @@ class GameServiceActor(out: ActorRef, user: User, actorSystem: ActorSystem) exte
           // the hand should be empty now
           val me: Player = Game.getPlayerByUsername(user.username)
           actorSystem.actorSelection("/user/*/flowActor").tell(new InEvent("notifyChange"), self)
-          out ! new OutEvent("pickCardFromClosedDeck", Json.obj())
+          out ! new OutEvent("dropCardToOpenedDeck", Json.obj())
+        }
+        case "replaceCard" => {
+          if(!cardDropped) {
+
+          }
         }
         case "notyfyChange" => {
           out ! new OutEvent("notifyChange", Json.obj())
