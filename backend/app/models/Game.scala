@@ -16,6 +16,20 @@ object Game {
   private var gameStarted = false
   // the player who starts the match
   private var firstPlayer: Player = _
+  private var cardOnTop: Card = _
+  var showCardOnTop: Boolean = false
+
+  def playerDropsCard(p: Player, index: Int) = {
+    val c = p.seeCard(index)
+    showCardOnTop = true
+    cardOnTop = c
+    if(topOfOpenedDeck().rank == c.rank) {
+      p.dropCard(index)
+      matches.head.openedDeck.putCard(c)
+    } else {
+      p.putCard(Deck52.deck.pickCard())
+    }
+  }
 
   /**
     * Finds the next player to play the turn
@@ -112,7 +126,7 @@ object Game {
     matches.head.curRound.curTurn.exchangeCards(target, hCardIndex, tCardIndex)
   def declareLastRound() = matches.head.curRound.curTurn.declareLastRound()
   def lastRoundIsDeclared(): Boolean = matches.head.curRound.curTurn.lastRoundIsDeclared()
-  def getHand(): Card = matches.head.curRound.curTurn.getHand()
+  def getHand(): Card = if (!turnFinished() && showCardOnTop) cardOnTop else matches.head.curRound.curTurn.getHand()
   def cardIsPicked(): Boolean = matches.head.curRound.curTurn.cardPicked
   def cardIsDropped(): Boolean = matches.head.curRound.curTurn.cardDropped
   def cardPickedFromOpenedDeck(): Boolean = matches.head.curRound.curTurn.pickedFromOpenedDeck
@@ -222,6 +236,7 @@ object Game {
         private def pickCard(deck: Deck): Card = {
           if (deck.isEmpty) null
           else if (hand == null) {
+            showCardOnTop = false
             hand = deck.pickCard()
             cardPicked = true
             gameStarted = true // the game starts when the first player picks a card

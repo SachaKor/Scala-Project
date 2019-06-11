@@ -115,15 +115,15 @@ class BoardPage extends Component {
           <img src={require(`../deck/PNG/${hand.rank}${hand.suit}.png`)} alt="" onClick={this.handleOpenedClick} />
         </div>
         <div className="container-row top-row">
-          <Deck rotate={1} cards={INIT_PLAYER.cards} socket={socket} />
+          <Deck rotate={1} cards={others[1].cards} socket={socket} />
         </div>
         <div className="container-row middle-row">
-          <Deck rotate={2} cards={INIT_PLAYER.cards} socket={socket} />
+          <Deck rotate={2} cards={others[0].cards} socket={socket} />
           <CommonDeck
             openedDeck={openedDeck}
             socket={socket}
           />
-          <Deck rotate={3} cards={INIT_PLAYER.cards} socket={socket} />
+          <Deck rotate={3} cards={others[2].cards} socket={socket} />
         </div>
         <div className="container-row bottom-row">
           <Deck rotate={-1} cards={me.cards} socket={socket} name={me.name} />

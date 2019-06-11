@@ -25,7 +25,7 @@ class GameServiceActor(out: ActorRef, user: User, actorSystem: ActorSystem) exte
           Logger.debug("JOIN EVENT")
           Game.addPlayer(new Player(user.username, List()))
           actorSystem.actorSelection("/user/*/flowActor").tell(InEvent("nbPlayers", Json.obj()), self)
-          if(Game.players.length == 2) {
+          if(Game.players.length == 4) {
             Game.newMatch() // init the first match
             actorSystem.actorSelection("/user/*/flowActor").tell(InEvent("startGame", Json.obj()), self)
           }
@@ -68,19 +68,14 @@ class GameServiceActor(out: ActorRef, user: User, actorSystem: ActorSystem) exte
             } else if(name == Game.curPlayer().name) {
               if(Game.cardIsPicked())
                 Game.replaceCard(index.toInt)
+              else
+                Game.playerDropsCard(Game.curPlayer(), index.toInt)
             }
-          }
-
-          // the user wants to drop a card to the opened deck while it's not his turn
-          if(name == user.username && index != "nope") {
-            val p = Game.getPlayerByUsername(name)
-            val cardToDrop = p.seeCard(index.toInt)
-            userDropsACard = true
-            cardToShowOnTop = cardToDrop
-            if(cardToDrop.rank == Game.topOfOpenedDeck().rank) {
-              p.dropCard(index.toInt)
-            } else {
-              p.putCard(Deck52.deck.pickCard())
+          } else {
+            // the user wants to drop a card to the opened deck while it's not his turn
+            if(name == user.username && index != "nope") {
+              val p = Game.getPlayerByUsername(name)
+              Game.playerDropsCard(p, index.toInt)
             }
           }
 
@@ -134,13 +129,11 @@ class GameServiceActor(out: ActorRef, user: User, actorSystem: ActorSystem) exte
   def getState(me: Player, myCards: List[Int], others: Map[Player, List[Int]]): JsValue = Json.obj(
     "me" -> me.toJson(myCards),
     "hand" -> {
-      if(userDropsACard && cardToShowOnTop != null) {
-        userDropsACard = false
-        cardToShowOnTop.toJson
-      }
       if (Game.getHand() == null)
         new Card(Rank.empty, Suit.empty, -1).toJson
       else if (Game.getPlayerByUsername(me.name) == Game.getPlayerByUsername(Game.curPlayer().name))
+        Game.getHand().toJson
+      else if (Game.showCardOnTop)
         Game.getHand().toJson
       else new Card(Rank.closed, Suit.closed, -1).toJson
     },
